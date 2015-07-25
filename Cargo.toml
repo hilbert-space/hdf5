@@ -10,3 +10,4 @@ description = "The package provides an interface to HDF5."
 
 [dependencies]
 hdf5-sys = "*"
+rustc-serialize = "*"

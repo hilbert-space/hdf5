@@ -1,4 +1,5 @@
 extern crate hdf5_sys as ffi;
+extern crate rustc_serialize as serialize;
 
 use std::{error, fmt};
 
@@ -41,6 +42,12 @@ pub fn version() -> Result<(usize, usize, usize)> {
                                        &mut patch as *mut _ as *mut _) });
     Ok((major, minor, patch))
 }
+
+mod decoder;
+mod encoder;
+
+pub use decoder::Decoder;
+pub use encoder::Encoder;
 
 #[cfg(test)]
 mod tests {
