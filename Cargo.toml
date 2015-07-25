@@ -7,3 +7,6 @@ repository = "https://github.com/stainless-steel/hdf5"
 homepage = "https://github.com/stainless-steel/hdf5"
 documentation = "https://stainless-steel.github.io/hdf5"
 description = "The package provides an interface to HDF5."
+
+[dependencies]
+hdf5-sys = "*"
