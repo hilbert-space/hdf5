@@ -20,6 +20,16 @@ macro_rules! ok(
     });
 );
 
+macro_rules! path_to_c_str(
+    ($path:expr) => (match $path.to_str() {
+        Some(path) => match ::std::ffi::CString::new(path) {
+            Ok(string) => string.as_ptr(),
+            _ => raise!("failed to process a path"),
+        },
+        _ => raise!("failed to process a path"),
+    });
+);
+
 impl fmt::Display for Error {
     #[inline]
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
@@ -37,22 +47,17 @@ impl error::Error for Error {
 /// Return the version number of HDF5.
 pub fn version() -> Result<(usize, usize, usize)> {
     let (mut major, mut minor, mut patch) = (0, 0, 0);
-    ok!(unsafe { ffi::H5get_libversion(&mut major as *mut _ as *mut _,
-                                       &mut minor as *mut _ as *mut _,
-                                       &mut patch as *mut _ as *mut _) });
+    unsafe {
+        ok!(ffi::H5get_libversion(&mut major as *mut _ as *mut _, &mut minor as *mut _ as *mut _,
+                                  &mut patch as *mut _ as *mut _));
+    }
     Ok((major, minor, patch))
 }
 
 mod decoder;
 mod encoder;
+mod file;
 
 pub use decoder::Decoder;
 pub use encoder::Encoder;
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn version() {
-        assert_eq!(::version().unwrap(), (1, 8, 15));
-    }
-}
+pub use file::File;
