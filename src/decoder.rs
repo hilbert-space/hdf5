@@ -5,11 +5,10 @@ use {Error, Result};
 /// A decoder.
 pub struct Decoder;
 
-#[allow(unused_variables)]
 impl rustc_serialize::Decoder for Decoder {
     type Error = Error;
 
-    fn error(&mut self, err: &str) -> Error {
+    fn error(&mut self, _: &str) -> Error {
         unimplemented!();
     }
 
@@ -21,32 +20,31 @@ impl rustc_serialize::Decoder for Decoder {
         unimplemented!();
     }
 
-    fn read_enum<T, F>(&mut self, name: &str, f: F) -> Result<T>
+    fn read_enum<T, F>(&mut self, _: &str, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support enums");
     }
 
-    fn read_enum_variant<T, F>(&mut self, names: &[&str], f: F) -> Result<T>
+    fn read_enum_variant<T, F>(&mut self, _: &[&str], _: F) -> Result<T>
         where F: FnMut(&mut Self, usize) -> Result<T>
     {
         panic!("HDF5 does not support enums");
     }
 
-    fn read_enum_variant_arg<T, F>(&mut self, a_idx: usize, f: F) -> Result<T>
+    fn read_enum_variant_arg<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support enums");
     }
 
-    fn read_enum_struct_variant<T, F>(&mut self, names: &[&str], f: F) -> Result<T>
+    fn read_enum_struct_variant<T, F>(&mut self, _: &[&str], _: F) -> Result<T>
         where F: FnMut(&mut Self, usize) -> Result<T>
     {
         panic!("HDF5 does not support enums");
     }
 
-    fn read_enum_struct_variant_field<T, F>(&mut self, f_name: &str, f_idx: usize, f: F)
-                                            -> Result<T>
+    fn read_enum_struct_variant_field<T, F>(&mut self, _: &str, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support enums");
@@ -80,19 +78,19 @@ impl rustc_serialize::Decoder for Decoder {
         unimplemented!();
     }
 
-    fn read_map<T, F>(&mut self, f: F) -> Result<T>
+    fn read_map<T, F>(&mut self, _: F) -> Result<T>
         where F: FnOnce(&mut Self, usize) -> Result<T>
     {
         unimplemented!();
     }
 
-    fn read_map_elt_key<T, F>(&mut self, idx: usize, f: F) -> Result<T>
+    fn read_map_elt_key<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         unimplemented!();
     }
 
-    fn read_map_elt_val<T, F>(&mut self, idx: usize, f: F) -> Result<T>
+    fn read_map_elt_val<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         unimplemented!();
@@ -102,19 +100,19 @@ impl rustc_serialize::Decoder for Decoder {
         unimplemented!();
     }
 
-    fn read_option<T, F>(&mut self, f: F) -> Result<T>
+    fn read_option<T, F>(&mut self, _: F) -> Result<T>
         where F: FnMut(&mut Self, bool) -> Result<T>
     {
         panic!("HDF5 does not support options");
     }
 
-    fn read_seq<T, F>(&mut self, f: F) -> Result<T>
+    fn read_seq<T, F>(&mut self, _: F) -> Result<T>
         where F: FnOnce(&mut Self, usize) -> Result<T>
     {
         unimplemented!();
     }
 
-    fn read_seq_elt<T, F>(&mut self, idx: usize, f: F) -> Result<T>
+    fn read_seq_elt<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         unimplemented!();
@@ -124,37 +122,37 @@ impl rustc_serialize::Decoder for Decoder {
         unimplemented!();
     }
 
-    fn read_struct<T, F>(&mut self, s_name: &str, len: usize, f: F) -> Result<T>
+    fn read_struct<T, F>(&mut self, _: &str, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         unimplemented!();
     }
 
-    fn read_struct_field<T, F>(&mut self, f_name: &str, f_idx: usize, f: F) -> Result<T>
+    fn read_struct_field<T, F>(&mut self, _: &str, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         unimplemented!();
     }
 
-    fn read_tuple<T, F>(&mut self, len: usize, f: F) -> Result<T>
+    fn read_tuple<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support tuples");
     }
 
-    fn read_tuple_arg<T, F>(&mut self, a_idx: usize, f: F) -> Result<T>
+    fn read_tuple_arg<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support tuples");
     }
 
-    fn read_tuple_struct<T, F>(&mut self, s_name: &str, len: usize, f: F) -> Result<T>
+    fn read_tuple_struct<T, F>(&mut self, _: &str, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support tuples");
     }
 
-    fn read_tuple_struct_arg<T, F>(&mut self, a_idx: usize, f: F) -> Result<T>
+    fn read_tuple_struct_arg<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
         panic!("HDF5 does not support tuples");

@@ -38,7 +38,7 @@ impl<'l> Encoder<'l> {
             State::Sequence(ref mut blob) => {
                 if let Some(ref datatype) = blob.datatype {
                     if datatype != &data.datatype() {
-                        raise!("cannot mix different datatypes");
+                        raise!("cannot mix datatypes in arrays");
                     }
                 } else {
                     blob.datatype = Some(data.datatype());
@@ -49,9 +49,7 @@ impl<'l> Encoder<'l> {
         }
     }
 
-    fn sequence<F>(&mut self, next: F) -> Result<()>
-        where F: FnOnce(&mut Self) -> Result<()>
-    {
+    fn sequence<F>(&mut self, next: F) -> Result<()> where F: FnOnce(&mut Self) -> Result<()> {
         let state = mem::replace(&mut self.state, State::Sequence(Blob::new()));
         try!(next(self));
         match mem::replace(&mut self.state, state) {
@@ -104,8 +102,7 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support enums");
     }
 
-    fn emit_enum_struct_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F)
-                                   -> Result<()>
+    fn emit_enum_struct_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         panic!("HDF5 does not support enums");
