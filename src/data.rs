@@ -1,7 +1,7 @@
 use ffi;
 use std::{mem, slice};
 
-use {Identity, Result};
+use Result;
 use datatype::{self, Datatype};
 
 /// Data.
@@ -22,9 +22,15 @@ pub trait IntoData {
     fn into_data(self) -> Result<Self::Target>;
 }
 
+/// An array.
+pub struct Array<T: Data> {
+    data: Vec<T>,
+    datatype: Datatype,
+}
+
 /// A slice.
 pub struct Slice<'l, T: Data + 'l> {
-    inner: &'l [T],
+    data: &'l [T],
     datatype: Datatype,
 }
 
@@ -44,13 +50,23 @@ macro_rules! implement(
             }
         }
 
+        impl IntoData for Vec<$name> {
+            type Target = Array<$name>;
+
+            #[inline]
+            fn into_data(self) -> Result<Self::Target> {
+                let datatype = try!(datatype::new_array($datatype, &[1, self.len()]));
+                Ok(Array { data: self, datatype: datatype })
+            }
+        }
+
         impl<'l> IntoData for &'l [$name] {
             type Target = Slice<'l, $name>;
 
             #[inline]
             fn into_data(self) -> Result<Self::Target> {
                 let datatype = try!(datatype::new_array($datatype, &[1, self.len()]));
-                Ok(Slice { inner: self, datatype: datatype })
+                Ok(Slice { data: self, datatype: datatype })
             }
         }
 
@@ -92,12 +108,18 @@ implement!(isize, ffi::H5T_NATIVE_INT64);
 #[cfg(target_pointer_width = "64")]
 implement!(usize, ffi::H5T_NATIVE_UINT64);
 
-impl<T: Data> IntoData for T {
-    type Target = T;
+impl<T: Data> Data for Array<T> {
+    #[inline]
+    fn as_bytes(&self) -> &[u8] {
+        unsafe {
+            slice::from_raw_parts(self.data.as_ptr() as *const _ as *const _,
+                                  mem::size_of::<T>() * self.data.len())
+        }
+    }
 
     #[inline]
-    fn into_data(self) -> Result<Self::Target> {
-        Ok(self)
+    fn datatype(&self) -> Datatype {
+        self.datatype.clone()
     }
 }
 
@@ -105,14 +127,14 @@ impl<'l, T: Data> Data for Slice<'l, T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
         unsafe {
-            slice::from_raw_parts(self.inner.as_ptr() as *const _ as *const _,
-                                  mem::size_of::<T>() * self.inner.len())
+            slice::from_raw_parts(self.data.as_ptr() as *const _ as *const _,
+                                  mem::size_of::<T>() * self.data.len())
         }
     }
 
     #[inline]
     fn datatype(&self) -> Datatype {
-        datatype::new_foreign(self.datatype.id())
+        self.datatype.clone()
     }
 }
 
@@ -126,4 +148,18 @@ impl<'l> Data for &'l str {
     fn datatype(&self) -> Datatype {
         datatype::new_foreign(ffi::H5T_C_S1)
     }
+}
+
+impl<T: Data> IntoData for T {
+    type Target = T;
+
+    #[inline]
+    fn into_data(self) -> Result<Self::Target> {
+        Ok(self)
+    }
+}
+
+#[inline]
+pub fn new_array<T: Data>(data: Vec<T>, datatype: Datatype) -> Result<Array<T>> {
+    Ok(Array { data: data, datatype: datatype })
 }

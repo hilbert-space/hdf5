@@ -11,11 +11,25 @@ pub struct Datatype {
 
 identity!(Datatype);
 
+impl Clone for Datatype {
+    #[inline]
+    fn clone(&self) -> Self {
+        Datatype { id: self.id, owned: false }
+    }
+}
+
 impl Drop for Datatype {
     fn drop(&mut self) {
         if self.owned {
             whatever!(ffi::H5Tclose(self.id));
         }
+    }
+}
+
+impl PartialEq for Datatype {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
     }
 }
 

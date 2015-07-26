@@ -1,28 +1,93 @@
+use ffi;
 use rustc_serialize;
 use std::mem;
 
-use data::Data;
+use data::{self, Array, Data};
+use datatype::{self, Datatype};
 use file::File;
-use {Error, Result};
+use {Error, Identity, Result};
 
 /// An encoder.
-#[allow(dead_code)]
 pub struct Encoder<'l> {
     file: &'l File,
     name: Option<String>,
+    state: State,
+}
+
+struct Blob {
+    data: Vec<u8>,
+    datatype: Option<Datatype>,
+}
+
+enum State {
+    Uncertain,
+    Sequence(Blob),
 }
 
 impl<'l> Encoder<'l> {
     /// Create an encoder.
     pub fn new(file: &'l File, name: &str) -> Result<Encoder<'l>> {
-        Ok(Encoder { file: file, name: Some(name.to_string()) })
+        Ok(Encoder { file: file, name: Some(name.to_string()), state: State::Uncertain })
     }
 
-    fn assign<T: Data>(&mut self, data: T) -> Result<()> {
-        match mem::replace(&mut self.name, None) {
-            Some(name) => self.file.write(&name, data),
-            _ => raise!("cannot write data without a name"),
+    fn element<T: Data>(&mut self, data: T) -> Result<()> {
+        match self.state {
+            State::Uncertain => match self.name.take() {
+                Some(ref name) => self.file.write(name, data),
+                _ => raise!("cannot write data without a name"),
+            },
+            State::Sequence(ref mut blob) => {
+                if let Some(ref datatype) = blob.datatype {
+                    if datatype != &data.datatype() {
+                        raise!("cannot mix different datatypes");
+                    }
+                } else {
+                    blob.datatype = Some(data.datatype());
+                }
+                blob.data.extend(data.as_bytes());
+                Ok(())
+            },
         }
+    }
+
+    fn sequence<F>(&mut self, next: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        let state = mem::replace(&mut self.state, State::Sequence(Blob::new()));
+        try!(next(self));
+        match mem::replace(&mut self.state, state) {
+            State::Sequence(blob) => match self.name.take() {
+                Some(ref name) => self.file.write(name, try!(blob.coagulate())),
+                _ => raise!("cannot write data without a name"),
+            },
+            _ => unreachable!(),
+        }
+    }
+}
+
+impl Blob {
+    #[inline]
+    fn new() -> Blob {
+        Blob { data: vec![], datatype: None }
+    }
+
+    fn coagulate(self) -> Result<Array<u8>> {
+        let Blob { data, datatype } = self;
+        let datatype = match datatype {
+            Some(datatype) => {
+                let size = unsafe { ffi::H5Tget_size(datatype.id()) };
+                if size <= 0 {
+                    raise!("failed to obtain the size of a datatype");
+                }
+                let size = size as usize;
+                if data.len() % size != 0 {
+                    raise!("encountered malformed array data");
+                }
+                try!(datatype::new_array(datatype, &[1, data.len() / size]))
+            },
+            _ => raise!("cannot infer the datatype of empty arrays"),
+        };
+        data::new_array(data, datatype)
     }
 }
 
@@ -35,7 +100,7 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
 
     #[inline]
     fn emit_char(&mut self, value: char) -> Result<()> {
-        self.assign(value as u32)
+        self.element(value as u32)
     }
 
     fn emit_enum<F>(&mut self, _: &str, _: F) -> Result<()>
@@ -71,42 +136,42 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
 
     #[inline]
     fn emit_f32(&mut self, value: f32) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_f64(&mut self, value: f64) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_i8(&mut self, value: i8) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_i16(&mut self, value: i16) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_i32(&mut self, value: i32) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_i64(&mut self, value: i64) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_u64(&mut self, value: u64) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_isize(&mut self, value: isize) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     fn emit_map<F>(&mut self, _: usize, _: F) -> Result<()>
@@ -149,7 +214,7 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     }
 
     fn emit_str(&mut self, value: &str) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     fn emit_struct<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
@@ -164,16 +229,16 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         unimplemented!();
     }
 
-    fn emit_seq<F>(&mut self, _: usize, _: F) -> Result<()>
+    fn emit_seq<F>(&mut self, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        self.sequence(next)
     }
 
-    fn emit_seq_elt<F>(&mut self, _: usize, _: F) -> Result<()>
+    fn emit_seq_elt<F>(&mut self, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        next(self)
     }
 
     fn emit_tuple<F>(&mut self, _: usize, _: F) -> Result<()>
@@ -202,21 +267,21 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
 
     #[inline]
     fn emit_u8(&mut self, value: u8) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_u16(&mut self, value: u16) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_u32(&mut self, value: u32) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 
     #[inline]
     fn emit_usize(&mut self, value: usize) -> Result<()> {
-        self.assign(value)
+        self.element(value)
     }
 }
