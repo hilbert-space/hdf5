@@ -16,7 +16,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// An identifier.
 pub type ID = ffi::hid_t;
 
-/// An identity.
+/// A type that has an identifier.
 pub trait Identity {
     /// Return the identifier.
     fn id(&self) -> ID;

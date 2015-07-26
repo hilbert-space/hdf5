@@ -4,7 +4,7 @@ use std::{mem, slice};
 use Result;
 use datatype::{self, Datatype};
 
-/// Data.
+/// A type suitable for storing.
 pub trait Data {
     /// Return the data.
     fn as_bytes(&self) -> &[u8];
@@ -13,7 +13,7 @@ pub trait Data {
     fn datatype(&self) -> Datatype;
 }
 
-/// A type capable of converting itself into `Data`.
+/// A type capable of converting itself into data.
 pub trait IntoData {
     /// The target type.
     type Target: Data;
