@@ -1,11 +1,10 @@
-use ffi;
 use rustc_serialize;
 use std::mem;
 
 use data::{self, Array, Data};
 use datatype::{self, Datatype};
 use file::File;
-use {Error, Identity, Result};
+use {Error, Result};
 
 /// An encoder.
 pub struct Encoder<'l> {
@@ -75,11 +74,7 @@ impl Blob {
         let Blob { data, datatype } = self;
         let datatype = match datatype {
             Some(datatype) => {
-                let size = unsafe { ffi::H5Tget_size(datatype.id()) };
-                if size <= 0 {
-                    raise!("failed to obtain the size of a datatype");
-                }
-                let size = size as usize;
+                let size = try!(datatype.size());
                 if data.len() % size != 0 {
                     raise!("encountered malformed array data");
                 }

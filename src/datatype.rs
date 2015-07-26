@@ -11,6 +11,17 @@ pub struct Datatype {
 
 identity!(Datatype);
 
+impl Datatype {
+    /// Return the size in bytes.
+    pub fn size(&self) -> Result<usize> {
+        let size = unsafe { ffi::H5Tget_size(self.id) };
+        if size <= 0 {
+            raise!("failed to read the size");
+        }
+        Ok(size as usize)
+    }
+}
+
 impl Clone for Datatype {
     #[inline]
     fn clone(&self) -> Self {
