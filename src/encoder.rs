@@ -169,24 +169,24 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     fn emit_map<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        panic!("HDF5 does not support maps");
     }
 
     fn emit_map_elt_key<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        panic!("HDF5 does not support maps");
     }
 
     fn emit_map_elt_val<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        panic!("HDF5 does not support maps");
     }
 
     #[inline]
     fn emit_nil(&mut self) -> Result<()> {
-        panic!("HDF5 does not support pointers");
+        panic!("HDF5 does not support nils");
     }
 
     fn emit_option<F>(&mut self, _: F) -> Result<()>

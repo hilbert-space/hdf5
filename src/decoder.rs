@@ -81,23 +81,23 @@ impl rustc_serialize::Decoder for Decoder {
     fn read_map<T, F>(&mut self, _: F) -> Result<T>
         where F: FnOnce(&mut Self, usize) -> Result<T>
     {
-        unimplemented!();
+        panic!("HDF5 does not support maps");
     }
 
     fn read_map_elt_key<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
-        unimplemented!();
+        panic!("HDF5 does not support maps");
     }
 
     fn read_map_elt_val<T, F>(&mut self, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
-        unimplemented!();
+        panic!("HDF5 does not support maps");
     }
 
     fn read_nil(&mut self) -> Result<()> {
-        unimplemented!();
+        panic!("HDF5 does not support nils");
     }
 
     fn read_option<T, F>(&mut self, _: F) -> Result<T>
