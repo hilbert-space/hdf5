@@ -213,6 +213,18 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support options");
     }
 
+    fn emit_seq<F>(&mut self, _: usize, next: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        self.sequence(next)
+    }
+
+    fn emit_seq_elt<F>(&mut self, _: usize, next: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        next(self)
+    }
+
     fn emit_str(&mut self, value: &str) -> Result<()> {
         self.element(value)
     }
@@ -227,18 +239,6 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
-    }
-
-    fn emit_seq<F>(&mut self, _: usize, next: F) -> Result<()>
-        where F: FnOnce(&mut Self) -> Result<()>
-    {
-        self.sequence(next)
-    }
-
-    fn emit_seq_elt<F>(&mut self, _: usize, next: F) -> Result<()>
-        where F: FnOnce(&mut Self) -> Result<()>
-    {
-        next(self)
     }
 
     fn emit_tuple<F>(&mut self, _: usize, _: F) -> Result<()>

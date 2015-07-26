@@ -9,47 +9,7 @@ pub struct Decoder;
 impl rustc_serialize::Decoder for Decoder {
     type Error = Error;
 
-    fn read_nil(&mut self) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn read_usize(&mut self) -> Result<usize> {
-        unimplemented!();
-    }
-
-    fn read_u64(&mut self) -> Result<u64> {
-        unimplemented!();
-    }
-
-    fn read_u32(&mut self) -> Result<u32> {
-        unimplemented!();
-    }
-
-    fn read_u16(&mut self) -> Result<u16> {
-        unimplemented!();
-    }
-
-    fn read_u8(&mut self) -> Result<u8> {
-        unimplemented!();
-    }
-
-    fn read_isize(&mut self) -> Result<isize> {
-        unimplemented!();
-    }
-
-    fn read_i64(&mut self) -> Result<i64> {
-        unimplemented!();
-    }
-
-    fn read_i32(&mut self) -> Result<i32> {
-        unimplemented!();
-    }
-
-    fn read_i16(&mut self) -> Result<i16> {
-        unimplemented!();
-    }
-
-    fn read_i8(&mut self) -> Result<i8> {
+    fn error(&mut self, err: &str) -> Error {
         unimplemented!();
     }
 
@@ -57,19 +17,7 @@ impl rustc_serialize::Decoder for Decoder {
         unimplemented!();
     }
 
-    fn read_f64(&mut self) -> Result<f64> {
-        unimplemented!();
-    }
-
-    fn read_f32(&mut self) -> Result<f32> {
-        unimplemented!();
-    }
-
     fn read_char(&mut self) -> Result<char> {
-        unimplemented!();
-    }
-
-    fn read_str(&mut self) -> Result<String> {
         unimplemented!();
     }
 
@@ -101,6 +49,78 @@ impl rustc_serialize::Decoder for Decoder {
                                             -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
+        unimplemented!();
+    }
+
+    fn read_f64(&mut self) -> Result<f64> {
+        unimplemented!();
+    }
+
+    fn read_f32(&mut self) -> Result<f32> {
+        unimplemented!();
+    }
+
+    fn read_i8(&mut self) -> Result<i8> {
+        unimplemented!();
+    }
+
+    fn read_i16(&mut self) -> Result<i16> {
+        unimplemented!();
+    }
+
+    fn read_i32(&mut self) -> Result<i32> {
+        unimplemented!();
+    }
+
+    fn read_i64(&mut self) -> Result<i64> {
+        unimplemented!();
+    }
+
+    fn read_isize(&mut self) -> Result<isize> {
+        unimplemented!();
+    }
+
+    fn read_map<T, F>(&mut self, f: F) -> Result<T>
+        where F: FnOnce(&mut Self, usize) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_map_elt_key<T, F>(&mut self, idx: usize, f: F) -> Result<T>
+        where F: FnOnce(&mut Self) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_map_elt_val<T, F>(&mut self, idx: usize, f: F) -> Result<T>
+        where F: FnOnce(&mut Self) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_nil(&mut self) -> Result<()> {
+        unimplemented!();
+    }
+
+    fn read_option<T, F>(&mut self, f: F) -> Result<T>
+        where F: FnMut(&mut Self, bool) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_seq<T, F>(&mut self, f: F) -> Result<T>
+        where F: FnOnce(&mut Self, usize) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_seq_elt<T, F>(&mut self, idx: usize, f: F) -> Result<T>
+        where F: FnOnce(&mut Self) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_str(&mut self) -> Result<String> {
         unimplemented!();
     }
 
@@ -140,43 +160,23 @@ impl rustc_serialize::Decoder for Decoder {
         unimplemented!();
     }
 
-    fn read_option<T, F>(&mut self, f: F) -> Result<T>
-        where F: FnMut(&mut Self, bool) -> Result<T>
-    {
+    fn read_u8(&mut self) -> Result<u8> {
         unimplemented!();
     }
 
-    fn read_seq<T, F>(&mut self, f: F) -> Result<T>
-        where F: FnOnce(&mut Self, usize) -> Result<T>
-    {
+    fn read_u16(&mut self) -> Result<u16> {
         unimplemented!();
     }
 
-    fn read_seq_elt<T, F>(&mut self, idx: usize, f: F) -> Result<T>
-        where F: FnOnce(&mut Self) -> Result<T>
-    {
+    fn read_u32(&mut self) -> Result<u32> {
         unimplemented!();
     }
 
-    fn read_map<T, F>(&mut self, f: F) -> Result<T>
-        where F: FnOnce(&mut Self, usize) -> Result<T>
-    {
+    fn read_u64(&mut self) -> Result<u64> {
         unimplemented!();
     }
 
-    fn read_map_elt_key<T, F>(&mut self, idx: usize, f: F) -> Result<T>
-        where F: FnOnce(&mut Self) -> Result<T>
-    {
-        unimplemented!();
-    }
-
-    fn read_map_elt_val<T, F>(&mut self, idx: usize, f: F) -> Result<T>
-        where F: FnOnce(&mut Self) -> Result<T>
-    {
-        unimplemented!();
-    }
-
-    fn error(&mut self, err: &str) -> Error {
+    fn read_usize(&mut self) -> Result<usize> {
         unimplemented!();
     }
 }
