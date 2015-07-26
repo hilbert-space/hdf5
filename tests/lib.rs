@@ -40,6 +40,8 @@ fn encode_scalar() {
 
     test!("k", 42isize);
     test!("l", 42usize);
+
+    test!("m", '界');
 }
 
 #[test]
@@ -68,6 +70,8 @@ fn write_scalar() {
 
     test!("k", 42isize);
     test!("l", 42usize);
+
+    test!("m", '界');
 }
 
 #[test]

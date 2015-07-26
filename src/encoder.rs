@@ -26,9 +26,35 @@ impl<'l> Encoder<'l> {
     }
 }
 
-#[allow(unused_variables)]
 impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     type Error = Error;
+
+    fn emit_bool(&mut self, _: bool) -> Result<()> {
+        panic!("HDF5 does not support booleans");
+    }
+
+    #[inline]
+    fn emit_char(&mut self, value: char) -> Result<()> {
+        self.assign(value as u32)
+    }
+
+    fn emit_enum<F>(&mut self, _: &str, _: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        panic!("HDF5 does not support enums");
+    }
+
+    fn emit_enum_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        panic!("HDF5 does not support enums");
+    }
+
+    fn emit_enum_variant_arg<F>(&mut self, _: usize, _: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        panic!("HDF5 does not support enums");
+    }
 
     #[inline]
     fn emit_f32(&mut self, value: f32) -> Result<()> {
@@ -90,90 +116,65 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         self.assign(value)
     }
 
+    #[inline]
     fn emit_nil(&mut self) -> Result<()> {
+        panic!("HDF5 does not support pointers");
+    }
+
+    fn emit_str(&mut self, _: &str) -> Result<()> {
         unimplemented!();
     }
 
-    fn emit_bool(&mut self, v: bool) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_char(&mut self, v: char) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_str(&mut self, v: &str) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_enum<F>(&mut self, name: &str, f: F) -> Result<()>
-        where F: FnOnce(&mut Self) -> Result<()>
-    {
-        unimplemented!();
-    }
-
-    fn emit_enum_variant<F>(&mut self, v_name: &str, v_id: usize, len: usize, f: F) -> Result<()>
-        where F: FnOnce(&mut Self) -> Result<()>
-    {
-        unimplemented!();
-    }
-
-    fn emit_enum_variant_arg<F>(&mut self, a_idx: usize, f: F) -> Result<()>
-        where F: FnOnce(&mut Self) -> Result<()>
-    {
-        unimplemented!();
-    }
-
-    fn emit_enum_struct_variant<F>(&mut self, v_name: &str, v_id: usize, len: usize, f: F)
+    fn emit_enum_struct_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F)
                                    -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_enum_struct_variant_field<F>(&mut self, f_name: &str, f_idx: usize, f: F) -> Result<()>
+    fn emit_enum_struct_variant_field<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_struct<F>(&mut self, name: &str, len: usize, f: F) -> Result<()>
+    fn emit_struct<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_struct_field<F>(&mut self, f_name: &str, f_idx: usize, f: F) -> Result<()>
+    fn emit_struct_field<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_tuple<F>(&mut self, len: usize, f: F) -> Result<()>
+    fn emit_tuple<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_tuple_arg<F>(&mut self, idx: usize, f: F) -> Result<()>
+    fn emit_tuple_arg<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_tuple_struct<F>(&mut self, name: &str, len: usize, f: F) -> Result<()>
+    fn emit_tuple_struct<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_tuple_struct_arg<F>(&mut self, f_idx: usize, f: F) -> Result<()>
+    fn emit_tuple_struct_arg<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_option<F>(&mut self, f: F) -> Result<()>
+    fn emit_option<F>(&mut self, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
@@ -183,37 +184,37 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         unimplemented!();
     }
 
-    fn emit_option_some<F>(&mut self, f: F) -> Result<()>
+    fn emit_option_some<F>(&mut self, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_seq<F>(&mut self, len: usize, f: F) -> Result<()>
+    fn emit_seq<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_seq_elt<F>(&mut self, idx: usize, f: F) -> Result<()>
+    fn emit_seq_elt<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_map<F>(&mut self, len: usize, f: F) -> Result<()>
+    fn emit_map<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_map_elt_key<F>(&mut self, idx: usize, f: F) -> Result<()>
+    fn emit_map_elt_key<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();
     }
 
-    fn emit_map_elt_val<F>(&mut self, idx: usize, f: F) -> Result<()>
+    fn emit_map_elt_val<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         unimplemented!();

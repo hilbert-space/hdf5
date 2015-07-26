@@ -65,6 +65,8 @@ macro_rules! implement(
     );
 );
 
+implement!(char, ffi::H5T_NATIVE_UINT32);
+
 implement!(f32, ffi::H5T_NATIVE_FLOAT);
 implement!(f64, ffi::H5T_NATIVE_DOUBLE);
 
