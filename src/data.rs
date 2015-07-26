@@ -115,3 +115,15 @@ impl<'l, T: Data> Data for Slice<'l, T> {
         datatype::new_foreign(self.datatype.id())
     }
 }
+
+impl<'l> Data for &'l str {
+    #[inline]
+    fn as_bytes(&self) -> &[u8] {
+        str::as_bytes(self)
+    }
+
+    #[inline]
+    fn datatype(&self) -> Datatype {
+        datatype::new_foreign(ffi::H5T_C_S1)
+    }
+}

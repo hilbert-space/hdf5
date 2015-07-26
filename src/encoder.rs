@@ -148,8 +148,8 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support options");
     }
 
-    fn emit_str(&mut self, _: &str) -> Result<()> {
-        unimplemented!();
+    fn emit_str(&mut self, value: &str) -> Result<()> {
+        self.assign(value)
     }
 
     fn emit_struct<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>

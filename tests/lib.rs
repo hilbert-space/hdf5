@@ -40,8 +40,26 @@ fn encode_scalar() {
 
     test!("k", 42isize);
     test!("l", 42usize);
+}
 
-    test!("m", '界');
+#[cfg(feature = "serialize")]
+#[test]
+fn encode_text() {
+    use hdf5::Encoder;
+    use rustc_serialize::Encodable;
+
+    let directory = setup();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    macro_rules! test(
+        ($name:expr, $value:expr) => ({
+            let mut encoder = Encoder::new(&file, $name).unwrap();
+            $value.encode(&mut encoder).unwrap();
+        });
+    );
+
+    test!("a", '界');
+    test!("b", "Hello, 世界!");
 }
 
 #[test]
@@ -70,8 +88,6 @@ fn write_scalar() {
 
     test!("k", 42isize);
     test!("l", 42usize);
-
-    test!("m", '界');
 }
 
 #[test]
@@ -100,6 +116,19 @@ fn write_vector() {
 
     test!("k", &vec![42isize]);
     test!("l", &vec![42usize]);
+}
+
+#[test]
+fn write_text() {
+    let directory = setup();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    macro_rules! test(
+        ($name:expr, $value:expr) => (file.write($name, $value).unwrap());
+    );
+
+    test!("a", '界');
+    test!("b", "Hello, 世界!");
 }
 
 #[test]
