@@ -1,12 +1,40 @@
 extern crate hdf5;
+extern crate rustc_serialize;
 extern crate temporary;
 
-use hdf5::File;
+use hdf5::{Encoder, File};
+use rustc_serialize::Encodable;
 use temporary::Directory;
 
 #[test]
-fn version() {
-    assert_eq!(hdf5::version().unwrap(), (1, 8, 15));
+fn encode_scalar() {
+    let directory = setup();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    macro_rules! test(
+        ($name:expr, $value:expr) => ({
+            let mut encoder = Encoder::new(&file, $name).unwrap();
+            $value.encode(&mut encoder).unwrap();
+        });
+    );
+
+    test!("a", 42f32);
+    test!("b", 42f64);
+
+    test!("c", 42i8);
+    test!("d", 42u8);
+
+    test!("e", 42i16);
+    test!("f", 42u16);
+
+    test!("g", 42i32);
+    test!("h", 42u32);
+
+    test!("i", 42i64);
+    test!("j", 42u64);
+
+    test!("k", 42isize);
+    test!("l", 42usize);
 }
 
 #[test]
@@ -14,23 +42,27 @@ fn write_scalar() {
     let directory = setup();
     let file = File::new(directory.join("data.h5")).unwrap();
 
-    file.write("a", 42f32).unwrap();
-    file.write("b", 42f64).unwrap();
+    macro_rules! test(
+        ($name:expr, $value:expr) => (file.write($name, $value).unwrap());
+    );
 
-    file.write("c", 42i8).unwrap();
-    file.write("d", 42u8).unwrap();
+    test!("a", 42f32);
+    test!("b", 42f64);
 
-    file.write("e", 42i16).unwrap();
-    file.write("f", 42u16).unwrap();
+    test!("c", 42i8);
+    test!("d", 42u8);
 
-    file.write("g", 42i32).unwrap();
-    file.write("h", 42u32).unwrap();
+    test!("e", 42i16);
+    test!("f", 42u16);
 
-    file.write("i", 42i64).unwrap();
-    file.write("j", 42u64).unwrap();
+    test!("g", 42i32);
+    test!("h", 42u32);
 
-    file.write("k", 42isize).unwrap();
-    file.write("l", 42usize).unwrap();
+    test!("i", 42i64);
+    test!("j", 42u64);
+
+    test!("k", 42isize);
+    test!("l", 42usize);
 }
 
 #[test]
@@ -38,23 +70,27 @@ fn write_vector() {
     let directory = setup();
     let file = File::new(directory.join("data.h5")).unwrap();
 
-    file.write("a", &vec![42f32]).unwrap();
-    file.write("b", &vec![42f64]).unwrap();
+    macro_rules! test(
+        ($name:expr, $value:expr) => (file.write($name, $value).unwrap());
+    );
 
-    file.write("c", &vec![42i8]).unwrap();
-    file.write("d", &vec![42u8]).unwrap();
+    test!("a", &vec![42f32]);
+    test!("b", &vec![42f64]);
 
-    file.write("e", &vec![42i16]).unwrap();
-    file.write("f", &vec![42u16]).unwrap();
+    test!("c", &vec![42i8]);
+    test!("d", &vec![42u8]);
 
-    file.write("g", &vec![42i32]).unwrap();
-    file.write("h", &vec![42u32]).unwrap();
+    test!("e", &vec![42i16]);
+    test!("f", &vec![42u16]);
 
-    file.write("i", &vec![42i64]).unwrap();
-    file.write("j", &vec![42u64]).unwrap();
+    test!("g", &vec![42i32]);
+    test!("h", &vec![42u32]);
 
-    file.write("k", &vec![42isize]).unwrap();
-    file.write("l", &vec![42usize]).unwrap();
+    test!("i", &vec![42i64]);
+    test!("j", &vec![42u64]);
+
+    test!("k", &vec![42isize]);
+    test!("l", &vec![42usize]);
 }
 
 #[test]
@@ -62,8 +98,17 @@ fn write_overwrite() {
     let directory = setup();
     let file = File::new(directory.join("data.h5")).unwrap();
 
-    file.write("a", 42f32).unwrap();
-    file.write("a", 42f64).unwrap();
+    macro_rules! test(
+        ($name:expr, $value:expr) => (file.write($name, $value).unwrap());
+    );
+
+    test!("a", 42f32);
+    test!("a", 42f64);
+}
+
+#[test]
+fn version() {
+    assert_eq!(hdf5::version().unwrap(), (1, 8, 15));
 }
 
 fn setup() -> Directory {

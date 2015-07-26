@@ -1,5 +1,7 @@
 use rustc_serialize;
+use std::mem;
 
+use data::Data;
 use file::File;
 use {Error, Result};
 
@@ -12,13 +14,15 @@ pub struct Encoder<'l> {
 
 impl<'l> Encoder<'l> {
     /// Create an encoder.
-    pub fn new(file: &'l File) -> Result<Encoder<'l>> {
-        Ok(Encoder { file: file, name: None })
+    pub fn new(file: &'l File, name: &str) -> Result<Encoder<'l>> {
+        Ok(Encoder { file: file, name: Some(name.to_string()) })
     }
 
-    /// Create an encoder positioned at a particular name.
-    pub fn with_name(file: &'l File, name: &str) -> Result<Encoder<'l>> {
-        Ok(Encoder { file: file, name: Some(name.to_string()) })
+    fn assign<T: Data>(&mut self, data: T) -> Result<()> {
+        match mem::replace(&mut self.name, None) {
+            Some(name) => self.file.write(&name, data),
+            _ => raise!("cannot write data without a name"),
+        }
     }
 }
 
@@ -26,59 +30,71 @@ impl<'l> Encoder<'l> {
 impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     type Error = Error;
 
+    #[inline]
+    fn emit_f32(&mut self, value: f32) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_f64(&mut self, value: f64) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_i8(&mut self, value: i8) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_u8(&mut self, value: u8) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_i16(&mut self, value: i16) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_u16(&mut self, value: u16) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_i32(&mut self, value: i32) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_u32(&mut self, value: u32) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_i64(&mut self, value: i64) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_u64(&mut self, value: u64) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_isize(&mut self, value: isize) -> Result<()> {
+        self.assign(value)
+    }
+
+    #[inline]
+    fn emit_usize(&mut self, value: usize) -> Result<()> {
+        self.assign(value)
+    }
+
     fn emit_nil(&mut self) -> Result<()> {
         unimplemented!();
     }
 
-    fn emit_usize(&mut self, v: usize) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_u64(&mut self, v: u64) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_u32(&mut self, v: u32) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_u16(&mut self, v: u16) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_u8(&mut self, v: u8) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_isize(&mut self, v: isize) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_i64(&mut self, v: i64) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_i32(&mut self, v: i32) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_i16(&mut self, v: i16) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_i8(&mut self, v: i8) -> Result<()> {
-        unimplemented!();
-    }
-
     fn emit_bool(&mut self, v: bool) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_f64(&mut self, v: f64) -> Result<()> {
-        unimplemented!();
-    }
-
-    fn emit_f32(&mut self, v: f32) -> Result<()> {
         unimplemented!();
     }
 
