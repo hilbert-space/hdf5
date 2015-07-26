@@ -8,10 +8,17 @@ homepage = "https://github.com/stainless-steel/hdf5"
 documentation = "https://stainless-steel.github.io/hdf5"
 description = "The package provides an interface to HDF5."
 
+[features]
+default = ["serialize"]
+serialize = ["rustc-serialize"]
+
 [dependencies]
 hdf5-sys = "*"
 libc = "*"
-rustc-serialize = "*"
+
+[dependencies.rustc-serialize]
+version = "*"
+optional = true
 
 [dev-dependencies]
 temporary = "*"

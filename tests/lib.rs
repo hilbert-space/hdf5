@@ -1,13 +1,18 @@
 extern crate hdf5;
-extern crate rustc_serialize;
 extern crate temporary;
 
-use hdf5::{Encoder, File};
-use rustc_serialize::Encodable;
+#[cfg(feature = "serialize")]
+extern crate rustc_serialize;
+
+use hdf5::File;
 use temporary::Directory;
 
+#[cfg(feature = "serialize")]
 #[test]
 fn encode_scalar() {
+    use hdf5::Encoder;
+    use rustc_serialize::Encodable;
+
     let directory = setup();
     let file = File::new(directory.join("data.h5")).unwrap();
 

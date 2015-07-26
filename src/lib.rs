@@ -1,5 +1,7 @@
 extern crate hdf5_sys as ffi;
 extern crate libc;
+
+#[cfg(feature = "serialize")]
 extern crate rustc_serialize;
 
 use std::{error, fmt};
@@ -121,13 +123,19 @@ mod data;
 mod dataset;
 mod dataspace;
 mod datatype;
-mod decoder;
-mod encoder;
 mod file;
 mod link;
 
+#[cfg(feature = "serialize")]
+mod decoder;
+#[cfg(feature = "serialize")]
+mod encoder;
+
 pub use data::{Data, IntoData, Slice};
 pub use datatype::Datatype;
-pub use decoder::Decoder;
-pub use encoder::Encoder;
 pub use file::File;
+
+#[cfg(feature = "serialize")]
+pub use decoder::Decoder;
+#[cfg(feature = "serialize")]
+pub use encoder::Encoder;
