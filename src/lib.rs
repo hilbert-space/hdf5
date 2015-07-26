@@ -126,7 +126,8 @@ mod encoder;
 mod file;
 mod link;
 
-pub use data::Data;
+pub use data::{Data, IntoData, Slice};
+pub use datatype::Datatype;
 pub use decoder::Decoder;
 pub use encoder::Encoder;
 pub use file::File;

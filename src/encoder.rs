@@ -4,6 +4,7 @@ use file::File;
 use {Error, Result};
 
 /// An encoder.
+#[allow(dead_code)]
 pub struct Encoder<'l> {
     file: &'l File,
     name: Option<String>,

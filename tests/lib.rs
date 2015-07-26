@@ -34,6 +34,30 @@ fn write_scalar() {
 }
 
 #[test]
+fn write_vector() {
+    let directory = setup();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    file.write("a", &vec![42f32]).unwrap();
+    file.write("b", &vec![42f64]).unwrap();
+
+    file.write("c", &vec![42i8]).unwrap();
+    file.write("d", &vec![42u8]).unwrap();
+
+    file.write("e", &vec![42i16]).unwrap();
+    file.write("f", &vec![42u16]).unwrap();
+
+    file.write("g", &vec![42i32]).unwrap();
+    file.write("h", &vec![42u32]).unwrap();
+
+    file.write("i", &vec![42i64]).unwrap();
+    file.write("j", &vec![42u64]).unwrap();
+
+    file.write("k", &vec![42isize]).unwrap();
+    file.write("l", &vec![42usize]).unwrap();
+}
+
+#[test]
 fn write_overwrite() {
     let directory = setup();
     let file = File::new(directory.join("data.h5")).unwrap();

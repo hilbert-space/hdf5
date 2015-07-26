@@ -1,7 +1,9 @@
 use ffi;
+use libc;
 
-use ID;
+use {Result, ID, Identity};
 
+/// A datatype.
 pub struct Datatype {
     id: ID,
     owned: bool,
@@ -18,6 +20,18 @@ impl Drop for Datatype {
 }
 
 #[inline]
-pub fn native(id: ID) -> Datatype {
+pub fn new_array<T: Identity>(datatype: T, dimensions: &[usize]) -> Result<Datatype> {
+    let dimensions = dimensions.iter().map(|&dimension| dimension as ffi::hsize_t)
+                                      .collect::<Vec<_>>();
+    Ok(Datatype {
+        id: ok!(ffi::H5Tarray_create2(datatype.id(), dimensions.len() as libc::c_uint,
+                                      dimensions.as_ptr()),
+                "failed to create a datatype"),
+        owned: true,
+    })
+}
+
+#[inline]
+pub fn new_foreign(id: ID) -> Datatype {
     Datatype { id: id, owned: false }
 }
