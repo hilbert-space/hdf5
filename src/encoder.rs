@@ -15,7 +15,7 @@ impl<'l> Encoder<'l> {
         Ok(Encoder { file: file, name: None })
     }
 
-    /// Create an encoder positioned to start encoding with a particular name.
+    /// Create an encoder positioned at a particular name.
     pub fn with_name(file: &'l File, name: &str) -> Result<Encoder<'l>> {
         Ok(Encoder { file: file, name: Some(name.to_string()) })
     }

@@ -1,7 +1,7 @@
 use ffi;
 use std::{mem, slice};
 
-use ID;
+use datatype::{self, Datatype};
 
 /// Data.
 pub trait Data {
@@ -9,7 +9,7 @@ pub trait Data {
     fn as_bytes(&self) -> &[u8];
 
     /// Return the datatype.
-    fn datatype(&self) -> ID;
+    fn datatype(&self) -> Datatype;
 }
 
 macro_rules! implement(
@@ -23,8 +23,8 @@ macro_rules! implement(
             }
 
             #[inline]
-            fn datatype(&self) -> ID {
-                $datatype
+            fn datatype(&self) -> Datatype {
+                datatype::native($datatype)
             }
         }
     );

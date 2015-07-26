@@ -43,7 +43,7 @@ impl File {
         if try!(Link::exists(self, name)) {
             try!(Link::delete(self, name));
         }
-        let dataset = try!(dataset::new(self, name, data.datatype(), &dataspace));
+        let dataset = try!(dataset::new(self, name, &data.datatype(), &dataspace));
         try!(dataset.write(data));
         Ok(())
     }

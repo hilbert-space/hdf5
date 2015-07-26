@@ -33,6 +33,15 @@ fn write_scalar() {
     file.write("l", 42usize).unwrap();
 }
 
+#[test]
+fn write_overwrite() {
+    let directory = setup();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    file.write("a", 42f32).unwrap();
+    file.write("a", 42f64).unwrap();
+}
+
 fn setup() -> Directory {
     Directory::new("hdf5").unwrap()
 }

@@ -120,6 +120,7 @@ pub fn version() -> Result<(usize, usize, usize)> {
 mod data;
 mod dataset;
 mod dataspace;
+mod datatype;
 mod decoder;
 mod encoder;
 mod file;

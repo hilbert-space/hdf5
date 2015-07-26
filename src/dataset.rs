@@ -11,8 +11,8 @@ identity!(Dataset);
 
 impl Dataset {
     pub fn write<T: Data>(&self, data: T) -> Result<()> {
-        ok!(ffi::H5Dwrite(self.id, data.datatype(), ffi::H5S_ALL, ffi::H5S_ALL, ffi::H5P_DEFAULT,
-                          data.as_bytes().as_ptr() as *const _));
+        ok!(ffi::H5Dwrite(self.id, data.datatype().id(), ffi::H5S_ALL, ffi::H5S_ALL,
+                          ffi::H5P_DEFAULT, data.as_bytes().as_ptr() as *const _));
         Ok(())
     }
 }
