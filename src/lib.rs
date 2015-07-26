@@ -1,5 +1,6 @@
 extern crate hdf5_sys as ffi;
-extern crate rustc_serialize as serialize;
+extern crate libc;
+extern crate rustc_serialize;
 
 use std::{error, fmt};
 
@@ -58,6 +59,12 @@ macro_rules! ok(
     });
 );
 
+macro_rules! whatever(
+    ($call:expr) => ({
+        let _ = unsafe { $call };
+    });
+);
+
 macro_rules! path_to_c_str(
     ($path:expr) => ({
         let path = $path;
@@ -110,15 +117,15 @@ pub fn version() -> Result<(usize, usize, usize)> {
     Ok((major, minor, patch))
 }
 
+mod data;
 mod dataset;
 mod dataspace;
 mod decoder;
 mod encoder;
 mod file;
 mod link;
-mod value;
 
+pub use data::Data;
 pub use decoder::Decoder;
 pub use encoder::Encoder;
 pub use file::File;
-pub use value::Value;

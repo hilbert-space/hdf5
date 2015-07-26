@@ -10,9 +10,27 @@ fn version() {
 }
 
 #[test]
-fn workflow() {
+fn write_scalar() {
     let directory = setup();
-    let _ = File::new(directory.join("data.h5")).unwrap();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    file.write("a", 42f32).unwrap();
+    file.write("b", 42f64).unwrap();
+
+    file.write("c", 42i8).unwrap();
+    file.write("d", 42u8).unwrap();
+
+    file.write("e", 42i16).unwrap();
+    file.write("f", 42u16).unwrap();
+
+    file.write("g", 42i32).unwrap();
+    file.write("h", 42u32).unwrap();
+
+    file.write("i", 42i64).unwrap();
+    file.write("j", 42u64).unwrap();
+
+    file.write("k", 42isize).unwrap();
+    file.write("l", 42usize).unwrap();
 }
 
 fn setup() -> Directory {

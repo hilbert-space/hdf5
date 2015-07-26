@@ -1,4 +1,4 @@
-use serialize;
+use rustc_serialize;
 
 use {Error, Result};
 
@@ -6,7 +6,7 @@ use {Error, Result};
 pub struct Decoder;
 
 #[allow(unused_variables)]
-impl serialize::Decoder for Decoder {
+impl rustc_serialize::Decoder for Decoder {
     type Error = Error;
 
     fn read_nil(&mut self) -> Result<()> {

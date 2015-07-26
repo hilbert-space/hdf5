@@ -1,5 +1,6 @@
 use ffi;
 
+use data::Data;
 use {ID, Identity, Result};
 
 pub struct Dataset {
@@ -8,9 +9,17 @@ pub struct Dataset {
 
 identity!(Dataset);
 
+impl Dataset {
+    pub fn write<T: Data>(&self, data: T) -> Result<()> {
+        ok!(ffi::H5Dwrite(self.id, data.datatype(), ffi::H5S_ALL, ffi::H5S_ALL, ffi::H5P_DEFAULT,
+                          data.as_bytes().as_ptr() as *const _));
+        Ok(())
+    }
+}
+
 impl Drop for Dataset {
     fn drop(&mut self) {
-        let _ = unsafe { ffi::H5Dclose(self.id) };
+        whatever!(ffi::H5Dclose(self.id));
     }
 }
 

@@ -1,16 +1,27 @@
 use ffi;
+use std::{mem, slice};
 
 use ID;
 
-/// A value.
-pub trait Value {
+/// Data.
+pub trait Data {
+    /// Return the data.
+    fn as_bytes(&self) -> &[u8];
+
     /// Return the datatype.
     fn datatype(&self) -> ID;
 }
 
 macro_rules! implement(
     ($name:ty, $datatype:expr) => (
-        impl Value for $name {
+        impl Data for $name {
+            #[inline]
+            fn as_bytes(&self) -> &[u8] {
+                unsafe {
+                    slice::from_raw_parts(self as *const _ as *const u8, mem::size_of::<$name>())
+                }
+            }
+
             #[inline]
             fn datatype(&self) -> ID {
                 $datatype
