@@ -1,12 +1,35 @@
 use serialize;
 
+use dataset;
+use dataspace;
+use file::File;
+use link::Link;
+use value::Value;
 use {Error, Result};
 
 /// An encoder.
-pub struct Encoder;
+pub struct Encoder<'l> {
+    file: &'l File,
+}
+
+impl<'l> Encoder<'l> {
+    /// Create an encoder.
+    pub fn new(file: &'l File) -> Result<Encoder<'l>> {
+        Ok(Encoder { file: file })
+    }
+
+    pub fn put<T: Value>(&mut self, name: &str, value: T) -> Result<()> {
+        let dataspace = try!(dataspace::new());
+        if try!(Link::exists(self.file, name)) {
+            try!(Link::delete(self.file, name));
+        }
+        let _ = try!(dataset::new(self.file, name, value.datatype(), &dataspace));
+        Ok(())
+    }
+}
 
 #[allow(unused_variables)]
-impl serialize::Encoder for Encoder {
+impl<'l> serialize::Encoder for Encoder<'l> {
     type Error = Error;
 
     fn emit_nil(&mut self) -> Result<()> {

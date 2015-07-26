@@ -10,25 +10,83 @@ pub struct Error(String);
 /// A result.
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// An identifier.
+pub type ID = ffi::hid_t;
+
+/// An identity.
+pub trait Identity {
+    /// Return the identifier.
+    fn id(&self) -> ID;
+}
+
+macro_rules! identity(
+    ($name:ident) => (
+        impl ::Identity for $name {
+            #[inline]
+            fn id(&self) -> ::ID {
+                self.id
+            }
+        }
+
+        impl<'l> ::Identity for &'l $name {
+            #[inline]
+            fn id(&self) -> ::ID {
+                self.id
+            }
+        }
+    );
+);
+
 macro_rules! raise(
-    ($message:expr) => (return Err(::Error($message.to_string())));
+    ($($arg:tt)*) => (return Err(::Error(format!($($arg)*))));
 );
 
 macro_rules! ok(
-    ($result:expr) => (if $result < 0 {
-        raise!("received an error code from the HDF5 API");
+    ($call:expr) => ({
+        let result = unsafe { $call };
+        if result < 0 {
+            raise!("failed to call a native function (error code {})", result);
+        }
+        result
+    });
+    ($call:expr, $($arg:tt)+) => ({
+        let result = unsafe { $call };
+        if result < 0 {
+            raise!($($arg)+);
+        }
+        result
     });
 );
 
 macro_rules! path_to_c_str(
-    ($path:expr) => (match $path.to_str() {
-        Some(path) => match ::std::ffi::CString::new(path) {
-            Ok(string) => string.as_ptr(),
-            _ => raise!("failed to process a path"),
-        },
-        _ => raise!("failed to process a path"),
+    ($path:expr) => ({
+        let path = $path;
+        match path.to_str() {
+            Some(path) => match ::std::ffi::CString::new(path) {
+                Ok(string) => string.as_ptr(),
+                _ => raise!("failed to process a path {:?}", path),
+            },
+            _ => raise!("failed to process a path {:?}", path),
+        }
     });
 );
+
+macro_rules! str_to_c_str(
+    ($string:expr) => ({
+        let string = $string;
+        match ::std::ffi::CString::new(string) {
+            Ok(string) => string.as_ptr(),
+            _ => raise!("failed to process a string {:?}", string),
+        }
+    });
+);
+
+impl Identity for ID {
+    #[inline]
+    fn id(&self) -> ID {
+        *self
+    }
+}
 
 impl fmt::Display for Error {
     #[inline]
@@ -47,17 +105,20 @@ impl error::Error for Error {
 /// Return the version number of HDF5.
 pub fn version() -> Result<(usize, usize, usize)> {
     let (mut major, mut minor, mut patch) = (0, 0, 0);
-    unsafe {
-        ok!(ffi::H5get_libversion(&mut major as *mut _ as *mut _, &mut minor as *mut _ as *mut _,
-                                  &mut patch as *mut _ as *mut _));
-    }
+    ok!(ffi::H5get_libversion(&mut major as *mut _ as *mut _, &mut minor as *mut _ as *mut _,
+                              &mut patch as *mut _ as *mut _));
     Ok((major, minor, patch))
 }
 
+mod dataset;
+mod dataspace;
 mod decoder;
 mod encoder;
 mod file;
+mod link;
+mod value;
 
 pub use decoder::Decoder;
 pub use encoder::Encoder;
 pub use file::File;
+pub use value::Value;
