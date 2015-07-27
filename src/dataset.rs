@@ -27,8 +27,9 @@ pub fn new<L, T, S>(location: L, name: &str, datatype: T, dataspace: S) -> Resul
     where L: Identity, T: Identity, S: Identity
 {
     Ok(Dataset {
-        id: ok!(ffi::H5Dcreate2(location.id(), str_to_c_str!(name), datatype.id(), dataspace.id(),
-                                ffi::H5P_DEFAULT, ffi::H5P_DEFAULT, ffi::H5P_DEFAULT),
+        id: ok!(ffi::H5Dcreate2(location.id(), str_to_cstr!(name).as_ptr(), datatype.id(),
+                                dataspace.id(), ffi::H5P_DEFAULT, ffi::H5P_DEFAULT,
+                                ffi::H5P_DEFAULT),
                 "failed to create a dataset {:?}", name),
     })
 }

@@ -60,7 +60,8 @@ pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
     let id = ok!(ffi::H5Tcreate(ffi::H5T_COMPOUND, size), "failed to create a compound datatype");
     let mut offset = 0;
     for &(ref name, ref datatype, size) in fields.iter() {
-        ok!(ffi::H5Tinsert(id, str_to_c_str!(&name[..]), offset as libc::size_t, datatype.id()));
+        ok!(ffi::H5Tinsert(id, str_to_cstr!(&name[..]).as_ptr(), offset as libc::size_t,
+                           datatype.id()));
         offset += size;
     }
     Ok(Datatype(Rc::new(Inner { id: id, owned: true })))

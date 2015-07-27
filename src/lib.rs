@@ -67,12 +67,12 @@ macro_rules! whatever(
     });
 );
 
-macro_rules! path_to_c_str(
+macro_rules! path_to_cstr(
     ($path:expr) => ({
         let path = $path;
         match path.to_str() {
             Some(path) => match ::std::ffi::CString::new(path) {
-                Ok(string) => string.as_ptr(),
+                Ok(string) => string,
                 _ => raise!("failed to process a path {:?}", path),
             },
             _ => raise!("failed to process a path {:?}", path),
@@ -80,11 +80,11 @@ macro_rules! path_to_c_str(
     });
 );
 
-macro_rules! str_to_c_str(
+macro_rules! str_to_cstr(
     ($string:expr) => ({
         let string = $string;
         match ::std::ffi::CString::new(string) {
-            Ok(string) => string.as_ptr(),
+            Ok(string) => string,
             _ => raise!("failed to process a string {:?}", string),
         }
     });
