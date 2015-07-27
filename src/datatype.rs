@@ -44,7 +44,6 @@ impl PartialEq for Datatype {
     }
 }
 
-#[inline]
 pub fn new_array<T: Identity>(datatype: T, dimensions: &[usize]) -> Result<Datatype> {
     let dimensions = dimensions.iter().map(|&dimension| dimension as ffi::hsize_t)
                                       .collect::<Vec<_>>();
@@ -56,6 +55,7 @@ pub fn new_array<T: Identity>(datatype: T, dimensions: &[usize]) -> Result<Datat
     })
 }
 
+#[cfg(feature = "serialize")]
 pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
     let size = fields.iter().fold(0, |sum, &(_, _, size)| sum + size);
     let id = ok!(ffi::H5Tcreate(ffi::H5T_COMPOUND, size as libc::size_t),

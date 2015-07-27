@@ -29,6 +29,7 @@ pub struct Array<T: Data> {
 }
 
 /// A compound.
+#[cfg(feature = "serialize")]
 pub struct Compound {
     data: Vec<u8>,
     datatype: Datatype,
@@ -129,6 +130,7 @@ impl<T: Data> Data for Array<T> {
     }
 }
 
+#[cfg(feature = "serialize")]
 impl Data for Compound {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
@@ -177,11 +179,13 @@ impl<T: Data> IntoData for T {
     }
 }
 
+#[cfg(feature = "serialize")]
 #[inline]
 pub fn new_array<T: Data>(data: Vec<T>, datatype: Datatype) -> Result<Array<T>> {
     Ok(Array { data: data, datatype: datatype })
 }
 
+#[cfg(feature = "serialize")]
 #[inline]
 pub fn new_compound(data: Vec<u8>, datatype: Datatype) -> Result<Compound> {
     Ok(Compound { data: data, datatype: datatype })

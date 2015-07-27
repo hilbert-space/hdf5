@@ -22,3 +22,7 @@ optional = true
 
 [dev-dependencies]
 temporary = "*"
+
+[[test]]
+name = "hdf5"
+path = "tests/lib.rs"
