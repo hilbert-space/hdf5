@@ -5,7 +5,7 @@ use setup;
 #[test]
 fn encode_compound() {
     let directory = setup();
-    let file = File::new("data.h5").unwrap();
+    let file = File::new(directory.join("data.h5")).unwrap();
 
     #[derive(RustcEncodable)]
     struct Foo {
