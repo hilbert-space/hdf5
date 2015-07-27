@@ -4,6 +4,54 @@ The package provides an interface to [HDF5][1].
 
 ## [Documentation][doc]
 
+## Example
+
+```rust
+extern crate hdf5;
+
+use hdf5::File;
+
+let path = "data.h5";
+let file = File::new(path).unwrap();
+
+file.write("foo", 42).unwrap();
+file.write("bar", &vec![42.0, 69.0]).unwrap();
+```
+
+Complex structures can be written using [`rustc-serialize`][2] as follows:
+
+```rust
+extern crate hdf5;
+extern crate rustc_serialize;
+
+use hdf5::{Encoder, File};
+use rustc_serialize::Encodable;
+
+#[derive(RustcEncodable)]
+struct Foo {
+    bar: Vec<f64>,
+    baz: Baz,
+}
+
+#[derive(RustcEncodable)]
+struct Baz {
+    qux: f64,
+}
+
+let foo = Foo {
+    bar: vec![42.0],
+    baz: Baz {
+        qux: 69.0,
+    },
+};
+
+let path = "data.h5";
+let file = File::new(path).unwrap();
+
+let mut encoder = Encoder::new(&file, "foo").unwrap();
+foo.encode(&mut encoder).unwrap()
+```
+
 ## Contributing
 
 1. Fork the project.
@@ -11,6 +59,7 @@ The package provides an interface to [HDF5][1].
 3. Open a pull request.
 
 [1]: http://www.hdfgroup.org/HDF5
+[2]: https://crates.io/crates/rustc-serialize
 
 [version-img]: https://img.shields.io/crates/v/hdf5.svg
 [version-url]: https://crates.io/crates/hdf5

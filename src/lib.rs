@@ -1,3 +1,67 @@
+//! Interface to [HDF5][1].
+//!
+//! ## Example
+//!
+//! ```
+//! extern crate hdf5;
+//! # extern crate temporary;
+//!
+//! use hdf5::File;
+//! # use temporary::Directory;
+//!
+//! # fn main() {
+//! let path = "data.h5";
+//! # let directory = Directory::new("hdf5").unwrap();
+//! # let path = directory.join(path);
+//! let file = File::new(path).unwrap();
+//!
+//! file.write("foo", 42).unwrap();
+//! file.write("bar", &vec![42.0, 69.0]).unwrap();
+//! # }
+//! ```
+//!
+//! Complex structures can be written using [`rustc-serialize`][2] as follows:
+//!
+//! ```
+//! extern crate hdf5;
+//! extern crate rustc_serialize;
+//! # extern crate temporary;
+//!
+//! use hdf5::{Encoder, File};
+//! use rustc_serialize::Encodable;
+//! # use temporary::Directory;
+//!
+//! #[derive(RustcEncodable)]
+//! struct Foo {
+//!     bar: Vec<f64>,
+//!     baz: Baz,
+//! }
+//!
+//! #[derive(RustcEncodable)]
+//! struct Baz {
+//!     qux: f64,
+//! }
+//!
+//! # fn main() {
+//! let foo = Foo {
+//!     bar: vec![42.0],
+//!     baz: Baz {
+//!         qux: 69.0,
+//!     },
+//! };
+//!
+//! let path = "data.h5";
+//! # let directory = Directory::new("hdf5").unwrap();
+//! # let path = directory.join(path);
+//! let file = File::new(path).unwrap();
+//!
+//! let mut encoder = Encoder::new(&file, "foo").unwrap();
+//! foo.encode(&mut encoder).unwrap()
+//! # }
+//!
+//! [1]: http://www.hdfgroup.org/HDF5
+//! [2]: https://crates.io/crates/rustc-serialize
+
 extern crate hdf5_sys as ffi;
 extern crate libc;
 
