@@ -118,7 +118,7 @@ impl<T: Data> Data for Array<T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
         unsafe {
-            slice::from_raw_parts(self.data.as_ptr() as *const _ as *const _,
+            slice::from_raw_parts(self.data.as_ptr() as *const _,
                                   mem::size_of::<T>() * self.data.len())
         }
     }
@@ -145,7 +145,7 @@ impl<'l, T: Data> Data for Slice<'l, T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
         unsafe {
-            slice::from_raw_parts(self.data.as_ptr() as *const _ as *const _,
+            slice::from_raw_parts(self.data.as_ptr() as *const _,
                                   mem::size_of::<T>() * self.data.len())
         }
     }

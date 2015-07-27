@@ -36,6 +36,17 @@ impl<'l> Encoder<'l> {
     }
 
     fn element<T: Data>(&mut self, data: T) -> Result<()> {
+        #[inline]
+        fn copy(from: &[u8], into: &mut Vec<u8>) -> usize {
+            use std::ptr::copy_nonoverlapping as copy;
+            let (delta, current) = (from.len(), into.len());
+            into.reserve(delta);
+            unsafe {
+                into.set_len(current + delta);
+                copy(from.as_ptr(), into.as_mut_ptr().offset(current as isize), delta);
+            }
+            delta
+        }
         match self.state {
             State::Uncertain => match self.name.take() {
                 Some(ref name) => self.file.write(name, data),
@@ -49,15 +60,12 @@ impl<'l> Encoder<'l> {
                 } else {
                     sequence.datatype = Some(data.datatype());
                 }
-                sequence.data.extend(data.as_bytes());
+                copy(data.as_bytes(), &mut sequence.data);
                 Ok(())
             },
             State::Structure(ref mut structure) => match self.name.take() {
                 Some(name) => {
-                    println!("Field: {}", &name);
-                    let size = structure.data.len();
-                    structure.data.extend(data.as_bytes());
-                    let size = structure.data.len() - size;
+                    let size = copy(data.as_bytes(), &mut structure.data);
                     structure.fields.push((name, data.datatype(), size));
                     Ok(())
                 },
