@@ -22,6 +22,26 @@ fn encode_boolean() {
 }
 
 #[test]
+fn encode_enum() {
+    // let directory = Directory::new("hdf5").unwrap();
+    // let file = File::new(directory.join("data.h5")).unwrap();
+    let file = File::new("data.h5").unwrap();
+
+    #[derive(RustcEncodable)]
+    #[allow(dead_code)]
+    enum Foo {
+        Bar,
+        Baz,
+        Qux,
+    }
+
+    let foo = Foo::Bar;
+
+    let mut encoder = Encoder::new(&file, "foo").unwrap();
+    foo.encode(&mut encoder).unwrap();
+}
+
+#[test]
 fn encode_compound() {
     let directory = Directory::new("hdf5").unwrap();
     let file = File::new(directory.join("data.h5")).unwrap();

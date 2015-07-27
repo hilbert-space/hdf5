@@ -159,6 +159,7 @@ impl Data for Blob {
 impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     type Error = Error;
 
+    #[inline]
     fn emit_bool(&mut self, value: bool) -> Result<()> {
         self.element(value as u8)
     }
@@ -168,10 +169,11 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         self.element(value as u32)
     }
 
-    fn emit_enum<F>(&mut self, _: &str, _: F) -> Result<()>
+    #[inline]
+    fn emit_enum<F>(&mut self, _: &str, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        next(self)
     }
 
     fn emit_enum_struct_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F) -> Result<()>
@@ -186,10 +188,11 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support enum structs");
     }
 
-    fn emit_enum_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F) -> Result<()>
+    #[inline]
+    fn emit_enum_variant<F>(&mut self, _: &str, id: usize, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        self.element(id)
     }
 
     fn emit_enum_variant_arg<F>(&mut self, _: usize, _: F) -> Result<()>
@@ -256,7 +259,6 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support maps");
     }
 
-    #[inline]
     fn emit_nil(&mut self) -> Result<()> {
         panic!("HDF5 does not support nils");
     }
@@ -277,28 +279,33 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support options");
     }
 
+    #[inline]
     fn emit_seq<F>(&mut self, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         self.sequence(next)
     }
 
+    #[inline]
     fn emit_seq_elt<F>(&mut self, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         next(self)
     }
 
+    #[inline]
     fn emit_str(&mut self, value: &str) -> Result<()> {
         self.element(value)
     }
 
+    #[inline]
     fn emit_struct<F>(&mut self, _: &str, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
         self.structure(next)
     }
 
+    #[inline]
     fn emit_struct_field<F>(&mut self, name: &str, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
