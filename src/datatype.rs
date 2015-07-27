@@ -45,7 +45,7 @@ impl PartialEq for Datatype {
 }
 
 pub fn new_array<T: Identity>(datatype: T, dimensions: &[usize]) -> Result<Datatype> {
-    let dimensions = dimensions.iter().map(|&size| size as ffi::hsize_t) .collect::<Vec<_>>();
+    let dimensions = dimensions.iter().map(|&size| size as ffi::hsize_t).collect::<Vec<_>>();
     let id = ok!(ffi::H5Tarray_create2(datatype.id(), dimensions.len() as libc::c_uint,
                                        dimensions.as_ptr()),
                  "failed to create a datatype");
