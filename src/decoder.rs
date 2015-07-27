@@ -3,6 +3,7 @@ use rustc_serialize;
 use {Error, Result};
 
 /// A decoder.
+#[doc(hidden)]
 pub struct Decoder;
 
 impl rustc_serialize::Decoder for Decoder {
