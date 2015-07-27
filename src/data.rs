@@ -61,7 +61,7 @@ macro_rules! implement(
 
             #[inline]
             fn into_data(self) -> Result<Self::Target> {
-                let datatype = try!(datatype::new_array($datatype, &[1, self.len()]));
+                let datatype = try!(datatype::new_array($datatype, &[self.len()]));
                 Ok(Array { data: self, datatype: datatype })
             }
         }
@@ -71,7 +71,7 @@ macro_rules! implement(
 
             #[inline]
             fn into_data(self) -> Result<Self::Target> {
-                let datatype = try!(datatype::new_array($datatype, &[1, self.len()]));
+                let datatype = try!(datatype::new_array($datatype, &[self.len()]));
                 Ok(Slice { data: self, datatype: datatype })
             }
         }

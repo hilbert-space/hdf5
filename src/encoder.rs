@@ -124,7 +124,7 @@ impl Sequence {
                 if data.len() % size != 0 {
                     raise!("encountered malformed array data");
                 }
-                try!(datatype::new_array(datatype, &[1, data.len() / size]))
+                try!(datatype::new_array(datatype, &[data.len() / size]))
             },
             _ => raise!("cannot infer the datatype of empty arrays"),
         };
