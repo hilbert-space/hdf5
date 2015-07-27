@@ -14,6 +14,14 @@ macro_rules! test(
 );
 
 #[test]
+fn encode_boolean() {
+    test!(
+        a := true,
+        b := false,
+    );
+}
+
+#[test]
 fn encode_compound() {
     let directory = Directory::new("hdf5").unwrap();
     let file = File::new(directory.join("data.h5")).unwrap();
@@ -51,7 +59,7 @@ fn encode_compound() {
 }
 
 #[test]
-fn encode_scalar() {
+fn encode_numberic_scalar() {
     test!(
         a := 42f32,
         b := 42f64,
@@ -74,15 +82,7 @@ fn encode_scalar() {
 }
 
 #[test]
-fn encode_text() {
-    test!(
-        a := '界',
-        b := "Hello, 世界!",
-    );
-}
-
-#[test]
-fn encode_vector() {
+fn encode_numeric_vector() {
     test!(
         a := vec![42f32, 69f32],
         b := vec![42f64, 69f64],
@@ -101,5 +101,13 @@ fn encode_vector() {
 
         k := vec![42isize, 69isize],
         l := vec![42usize, 69usize],
+    );
+}
+
+#[test]
+fn encode_text() {
+    test!(
+        a := '界',
+        b := "Hello, 世界!",
     );
 }

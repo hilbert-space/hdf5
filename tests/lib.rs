@@ -19,6 +19,14 @@ macro_rules! test(
 );
 
 #[test]
+fn write_boolean() {
+    test!(
+        a := true,
+        b := false,
+    );
+}
+
+#[test]
 fn write_numeric_scalar() {
     test!(
         a := 42f32,
@@ -65,18 +73,18 @@ fn write_numeric_vector() {
 }
 
 #[test]
-fn write_text() {
-    test!(
-        a := '界',
-        b := "Hello, 世界!",
-    );
-}
-
-#[test]
 fn write_overwrite() {
     test!(
         a := 42f32,
         a := 42f64,
+    );
+}
+
+#[test]
+fn write_text() {
+    test!(
+        a := '界',
+        b := "Hello, 世界!",
     );
 }
 

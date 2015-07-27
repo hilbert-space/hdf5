@@ -13,7 +13,7 @@ impl rustc_serialize::Decoder for Decoder {
     }
 
     fn read_bool(&mut self) -> Result<bool> {
-        panic!("HDF5 does not support booleans");
+        unimplemented!();
     }
 
     fn read_char(&mut self) -> Result<char> {

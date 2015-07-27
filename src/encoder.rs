@@ -159,8 +159,8 @@ impl Data for Blob {
 impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     type Error = Error;
 
-    fn emit_bool(&mut self, _: bool) -> Result<()> {
-        panic!("HDF5 does not support booleans");
+    fn emit_bool(&mut self, value: bool) -> Result<()> {
+        self.element(value as u8)
     }
 
     #[inline]
