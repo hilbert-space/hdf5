@@ -52,6 +52,7 @@ impl<'l> Encoder<'l> {
             }
             delta
         }
+
         match self.state {
             State::Uncertain => match self.name.take() {
                 Some(ref name) => self.file.write(name, data),
@@ -83,10 +84,7 @@ impl<'l> Encoder<'l> {
         let state = mem::replace(&mut self.state, State::Sequence(Sequence::new()));
         try!(next(self));
         match mem::replace(&mut self.state, state) {
-            State::Sequence(sequence) => match self.name.take() {
-                Some(ref name) => self.file.write(name, try!(sequence.coagulate())),
-                _ => raise!("cannot write an array without a name"),
-            },
+            State::Sequence(sequence) => self.element(try!(sequence.coagulate())),
             _ => unreachable!(),
         }
     }
@@ -95,10 +93,7 @@ impl<'l> Encoder<'l> {
         let state = mem::replace(&mut self.state, State::Structure(Structure::new()));
         try!(next(self));
         match mem::replace(&mut self.state, state) {
-            State::Structure(structure) => match self.name.take() {
-                Some(ref name) => self.file.write(name, try!(structure.coagulate())),
-                _ => raise!("cannot write a struct without a name"),
-            },
+            State::Structure(structure) => self.element(try!(structure.coagulate())),
             _ => unreachable!(),
         }
     }
