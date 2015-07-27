@@ -56,6 +56,18 @@ pub fn new_array<T: Identity>(datatype: T, dimensions: &[usize]) -> Result<Datat
     })
 }
 
+pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
+    let size = fields.iter().fold(0, |sum, &(_, _, size)| sum + size);
+    let id = ok!(ffi::H5Tcreate(ffi::H5T_COMPOUND, size as libc::size_t),
+                 "failed to create a compound datatype");
+    let mut offset = 0;
+    for &(ref name, ref datatype, size) in fields.iter() {
+        ok!(ffi::H5Tinsert(id, str_to_c_str!(&name[..]), offset as libc::size_t, datatype.id()));
+        offset += size;
+    }
+    Ok(Datatype { id: id, owned: true })
+}
+
 #[inline]
 pub fn new_foreign(id: ID) -> Datatype {
     Datatype { id: id, owned: false }

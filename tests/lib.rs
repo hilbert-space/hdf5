@@ -9,6 +9,60 @@ use temporary::Directory;
 
 #[cfg(feature = "serialize")]
 #[test]
+fn encode_compound() {
+    use hdf5::Encoder;
+    use rustc_serialize::Encodable;
+
+    let directory = setup();
+    let file = File::new(directory.join("data.h5")).unwrap();
+
+    #[derive(RustcEncodable)]
+    struct Foo {
+        a: f32,
+        b: f64,
+
+        c: i8,
+        d: u8,
+
+        e: i16,
+        f: u16,
+
+        g: i32,
+        h: u32,
+
+        i: i64,
+        j: u64,
+
+        k: isize,
+        l: usize,
+    }
+
+    let foo = Foo {
+        a: 42f32,
+        b: 42f64,
+
+        c: 42i8,
+        d: 42u8,
+
+        e: 42i16,
+        f: 42u16,
+
+        g: 42i32,
+        h: 42u32,
+
+        i: 42i64,
+        j: 42u64,
+
+        k: 42isize,
+        l: 42usize,
+    };
+
+    let mut encoder = Encoder::new(&file, "foo").unwrap();
+    foo.encode(&mut encoder).unwrap();
+}
+
+#[cfg(feature = "serialize")]
+#[test]
 fn encode_scalar() {
     use hdf5::Encoder;
     use rustc_serialize::Encodable;

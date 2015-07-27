@@ -23,31 +23,31 @@ impl rustc_serialize::Decoder for Decoder {
     fn read_enum<T, F>(&mut self, _: &str, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
-        panic!("HDF5 does not support enums");
-    }
-
-    fn read_enum_variant<T, F>(&mut self, _: &[&str], _: F) -> Result<T>
-        where F: FnMut(&mut Self, usize) -> Result<T>
-    {
-        panic!("HDF5 does not support enums");
-    }
-
-    fn read_enum_variant_arg<T, F>(&mut self, _: usize, _: F) -> Result<T>
-        where F: FnOnce(&mut Self) -> Result<T>
-    {
-        panic!("HDF5 does not support enums");
+        unimplemented!();
     }
 
     fn read_enum_struct_variant<T, F>(&mut self, _: &[&str], _: F) -> Result<T>
         where F: FnMut(&mut Self, usize) -> Result<T>
     {
-        panic!("HDF5 does not support enums");
+        panic!("HDF5 does not support enum structs");
     }
 
     fn read_enum_struct_variant_field<T, F>(&mut self, _: &str, _: usize, _: F) -> Result<T>
         where F: FnOnce(&mut Self) -> Result<T>
     {
-        panic!("HDF5 does not support enums");
+        panic!("HDF5 does not support enum structs");
+    }
+
+    fn read_enum_variant<T, F>(&mut self, _: &[&str], _: F) -> Result<T>
+        where F: FnMut(&mut Self, usize) -> Result<T>
+    {
+        unimplemented!();
+    }
+
+    fn read_enum_variant_arg<T, F>(&mut self, _: usize, _: F) -> Result<T>
+        where F: FnOnce(&mut Self) -> Result<T>
+    {
+        panic!("HDF5 does not support enums with arguments");
     }
 
     fn read_f64(&mut self) -> Result<f64> {

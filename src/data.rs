@@ -28,6 +28,12 @@ pub struct Array<T: Data> {
     datatype: Datatype,
 }
 
+/// A compound.
+pub struct Compound {
+    data: Vec<u8>,
+    datatype: Datatype,
+}
+
 /// A slice.
 pub struct Slice<'l, T: Data + 'l> {
     data: &'l [T],
@@ -123,6 +129,18 @@ impl<T: Data> Data for Array<T> {
     }
 }
 
+impl Data for Compound {
+    #[inline]
+    fn as_bytes(&self) -> &[u8] {
+        &self.data
+    }
+
+    #[inline]
+    fn datatype(&self) -> Datatype {
+        self.datatype.clone()
+    }
+}
+
 impl<'l, T: Data> Data for Slice<'l, T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
@@ -162,4 +180,9 @@ impl<T: Data> IntoData for T {
 #[inline]
 pub fn new_array<T: Data>(data: Vec<T>, datatype: Datatype) -> Result<Array<T>> {
     Ok(Array { data: data, datatype: datatype })
+}
+
+#[inline]
+pub fn new_compound(data: Vec<u8>, datatype: Datatype) -> Result<Compound> {
+    Ok(Compound { data: data, datatype: datatype })
 }

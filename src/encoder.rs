@@ -1,7 +1,7 @@
 use rustc_serialize;
 use std::mem;
 
-use data::{self, Array, Data};
+use data::{self, Array, Compound, Data};
 use datatype::{self, Datatype};
 use file::File;
 use {Error, Result};
@@ -13,14 +13,20 @@ pub struct Encoder<'l> {
     state: State,
 }
 
-struct Blob {
+enum State {
+    Uncertain,
+    Sequence(Sequence),
+    Structure(Structure),
+}
+
+struct Sequence {
     data: Vec<u8>,
     datatype: Option<Datatype>,
 }
 
-enum State {
-    Uncertain,
-    Sequence(Blob),
+struct Structure {
+    data: Vec<u8>,
+    fields: Vec<(String, Datatype, usize)>,
 }
 
 impl<'l> Encoder<'l> {
@@ -35,41 +41,75 @@ impl<'l> Encoder<'l> {
                 Some(ref name) => self.file.write(name, data),
                 _ => raise!("cannot write data without a name"),
             },
-            State::Sequence(ref mut blob) => {
-                if let Some(ref datatype) = blob.datatype {
+            State::Sequence(ref mut sequence) => {
+                if let Some(ref datatype) = sequence.datatype {
                     if datatype != &data.datatype() {
                         raise!("cannot mix datatypes in arrays");
                     }
                 } else {
-                    blob.datatype = Some(data.datatype());
+                    sequence.datatype = Some(data.datatype());
                 }
-                blob.data.extend(data.as_bytes());
+                sequence.data.extend(data.as_bytes());
                 Ok(())
+            },
+            State::Structure(ref mut structure) => match self.name.take() {
+                Some(name) => {
+                    println!("Field: {}", &name);
+                    let size = structure.data.len();
+                    structure.data.extend(data.as_bytes());
+                    let size = structure.data.len() - size;
+                    structure.fields.push((name, data.datatype(), size));
+                    Ok(())
+                },
+                _ => raise!("cannot write a field without a name"),
             },
         }
     }
 
     fn sequence<F>(&mut self, next: F) -> Result<()> where F: FnOnce(&mut Self) -> Result<()> {
-        let state = mem::replace(&mut self.state, State::Sequence(Blob::new()));
+        let state = mem::replace(&mut self.state, State::Sequence(Sequence::new()));
         try!(next(self));
         match mem::replace(&mut self.state, state) {
-            State::Sequence(blob) => match self.name.take() {
-                Some(ref name) => self.file.write(name, try!(blob.coagulate())),
-                _ => raise!("cannot write data without a name"),
+            State::Sequence(sequence) => match self.name.take() {
+                Some(ref name) => self.file.write(name, try!(sequence.coagulate())),
+                _ => raise!("cannot write an array without a name"),
             },
             _ => unreachable!(),
         }
     }
+
+    fn structure<F>(&mut self, next: F) -> Result<()> where F: FnOnce(&mut Self) -> Result<()> {
+        let state = mem::replace(&mut self.state, State::Structure(Structure::new()));
+        try!(next(self));
+        match mem::replace(&mut self.state, state) {
+            State::Structure(structure) => match self.name.take() {
+                Some(ref name) => self.file.write(name, try!(structure.coagulate())),
+                _ => raise!("cannot write a struct without a name"),
+            },
+            _ => unreachable!(),
+        }
+    }
+
+    fn structure_field<F>(&mut self, name: &str, next: F) -> Result<()>
+        where F: FnOnce(&mut Self) -> Result<()>
+    {
+        let name = mem::replace(&mut self.name, Some(name.to_string()));
+        try!(next(self));
+        match mem::replace(&mut self.name, name) {
+            None => Ok(()),
+            _ => raise!("found a field without a value"),
+        }
+    }
 }
 
-impl Blob {
+impl Sequence {
     #[inline]
-    fn new() -> Blob {
-        Blob { data: vec![], datatype: None }
+    fn new() -> Sequence {
+        Sequence { data: vec![], datatype: None }
     }
 
     fn coagulate(self) -> Result<Array<u8>> {
-        let Blob { data, datatype } = self;
+        let Sequence { data, datatype } = self;
         let datatype = match datatype {
             Some(datatype) => {
                 let size = try!(datatype.size());
@@ -81,6 +121,18 @@ impl Blob {
             _ => raise!("cannot infer the datatype of empty arrays"),
         };
         data::new_array(data, datatype)
+    }
+}
+
+impl Structure {
+    fn new() -> Structure {
+        Structure { data: vec![], fields: vec![] }
+    }
+
+    fn coagulate(self) -> Result<Compound> {
+        let Structure { data, fields } = self;
+        let datatype = try!(datatype::new_compound(&fields));
+        data::new_compound(data, datatype)
     }
 }
 
@@ -99,31 +151,31 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
     fn emit_enum<F>(&mut self, _: &str, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support enums");
+        unimplemented!();
     }
 
     fn emit_enum_struct_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support enums");
+        panic!("HDF5 does not support enum structs");
     }
 
     fn emit_enum_struct_variant_field<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support enums");
+        panic!("HDF5 does not support enum structs");
     }
 
     fn emit_enum_variant<F>(&mut self, _: &str, _: usize, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support enums");
+        unimplemented!();
     }
 
     fn emit_enum_variant_arg<F>(&mut self, _: usize, _: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support enums");
+        panic!("HDF5 does not support enums with arguments");
     }
 
     #[inline]
@@ -221,16 +273,16 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         self.element(value)
     }
 
-    fn emit_struct<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
+    fn emit_struct<F>(&mut self, _: &str, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        self.structure(next)
     }
 
-    fn emit_struct_field<F>(&mut self, _: &str, _: usize, _: F) -> Result<()>
+    fn emit_struct_field<F>(&mut self, name: &str, _: usize, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        unimplemented!();
+        self.structure_field(name, next)
     }
 
     fn emit_tuple<F>(&mut self, _: usize, _: F) -> Result<()>
