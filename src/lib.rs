@@ -131,7 +131,7 @@ mod decoder;
 #[cfg(feature = "serialize")]
 mod encoder;
 
-pub use data::{Array, Data, IntoData, Slice};
+pub use data::{Data, IntoData, Slice};
 pub use datatype::Datatype;
 pub use file::File;
 

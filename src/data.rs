@@ -22,19 +22,6 @@ pub trait IntoData {
     fn into_data(self) -> Result<Self::Target>;
 }
 
-/// An array.
-pub struct Array<T: Data> {
-    data: Vec<T>,
-    datatype: Datatype,
-}
-
-/// A compound.
-#[cfg(feature = "serialize")]
-pub struct Compound {
-    data: Vec<u8>,
-    datatype: Datatype,
-}
-
 /// A slice.
 pub struct Slice<'l, T: Data + 'l> {
     data: &'l [T],
@@ -54,16 +41,6 @@ macro_rules! implement(
             #[inline]
             fn datatype(&self) -> Datatype {
                 datatype::new_foreign($datatype)
-            }
-        }
-
-        impl IntoData for Vec<$name> {
-            type Target = Array<$name>;
-
-            #[inline]
-            fn into_data(self) -> Result<Self::Target> {
-                let datatype = try!(datatype::new_array($datatype, &[self.len()]));
-                Ok(Array { data: self, datatype: datatype })
             }
         }
 
@@ -115,34 +92,6 @@ implement!(isize, ffi::H5T_NATIVE_INT64);
 #[cfg(target_pointer_width = "64")]
 implement!(usize, ffi::H5T_NATIVE_UINT64);
 
-impl<T: Data> Data for Array<T> {
-    #[inline]
-    fn as_bytes(&self) -> &[u8] {
-        unsafe {
-            slice::from_raw_parts(self.data.as_ptr() as *const _,
-                                  mem::size_of::<T>() * self.data.len())
-        }
-    }
-
-    #[inline]
-    fn datatype(&self) -> Datatype {
-        self.datatype.clone()
-    }
-}
-
-#[cfg(feature = "serialize")]
-impl Data for Compound {
-    #[inline]
-    fn as_bytes(&self) -> &[u8] {
-        &self.data
-    }
-
-    #[inline]
-    fn datatype(&self) -> Datatype {
-        self.datatype.clone()
-    }
-}
-
 impl<'l, T: Data> Data for Slice<'l, T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
@@ -177,16 +126,4 @@ impl<T: Data> IntoData for T {
     fn into_data(self) -> Result<Self::Target> {
         Ok(self)
     }
-}
-
-#[cfg(feature = "serialize")]
-#[inline]
-pub fn new_array<T: Data>(data: Vec<T>, datatype: Datatype) -> Result<Array<T>> {
-    Ok(Array { data: data, datatype: datatype })
-}
-
-#[cfg(feature = "serialize")]
-#[inline]
-pub fn new_compound(data: Vec<u8>, datatype: Datatype) -> Result<Compound> {
-    Ok(Compound { data: data, datatype: datatype })
 }

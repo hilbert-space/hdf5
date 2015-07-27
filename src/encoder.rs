@@ -1,7 +1,7 @@
 use rustc_serialize;
 use std::mem;
 
-use data::{self, Array, Compound, Data};
+use data::Data;
 use datatype::{self, Datatype};
 use file::File;
 use {Error, Result};
@@ -27,6 +27,11 @@ struct Sequence {
 struct Structure {
     data: Vec<u8>,
     fields: Vec<(String, Datatype, usize)>,
+}
+
+struct Blob {
+    data: Vec<u8>,
+    datatype: Datatype,
 }
 
 impl<'l> Encoder<'l> {
@@ -116,7 +121,7 @@ impl Sequence {
         Sequence { data: vec![], datatype: None }
     }
 
-    fn coagulate(self) -> Result<Array<u8>> {
+    fn coagulate(self) -> Result<Blob> {
         let Sequence { data, datatype } = self;
         let datatype = match datatype {
             Some(datatype) => {
@@ -128,7 +133,7 @@ impl Sequence {
             },
             _ => raise!("cannot infer the datatype of empty arrays"),
         };
-        data::new_array(data, datatype)
+        Ok(Blob { data: data, datatype: datatype })
     }
 }
 
@@ -137,10 +142,22 @@ impl Structure {
         Structure { data: vec![], fields: vec![] }
     }
 
-    fn coagulate(self) -> Result<Compound> {
+    fn coagulate(self) -> Result<Blob> {
         let Structure { data, fields } = self;
         let datatype = try!(datatype::new_compound(&fields));
-        data::new_compound(data, datatype)
+        Ok(Blob { data: data, datatype: datatype })
+    }
+}
+
+impl Data for Blob {
+    #[inline]
+    fn as_bytes(&self) -> &[u8] {
+        &self.data
+    }
+
+    #[inline]
+    fn datatype(&self) -> Datatype {
+        self.datatype.clone()
     }
 }
 
