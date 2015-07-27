@@ -5,47 +5,34 @@ use setup;
 #[test]
 fn encode_compound() {
     let directory = setup();
-    let file = File::new(directory.join("data.h5")).unwrap();
+    let file = File::new("data.h5").unwrap();
 
     #[derive(RustcEncodable)]
     struct Foo {
+        a: f64,
+        b: i64,
+        c: Vec<u64>,
+        d: [usize; 2],
+        e: Bar,
+    }
+
+    #[derive(RustcEncodable)]
+    struct Bar {
         a: f32,
-        b: f64,
-
-        c: i8,
-        d: u8,
-
-        e: i16,
-        f: u16,
-
-        g: i32,
-        h: u32,
-
-        i: i64,
-        j: u64,
-
-        k: isize,
-        l: usize,
+        b: u32,
+        c: Vec<isize>,
     }
 
     let foo = Foo {
-        a: 42f32,
-        b: 42f64,
-
-        c: 42i8,
-        d: 42u8,
-
-        e: 42i16,
-        f: 42u16,
-
-        g: 42i32,
-        h: 42u32,
-
-        i: 42i64,
-        j: 42u64,
-
-        k: 42isize,
-        l: 42usize,
+        a: 42.0,
+        b: 42,
+        c: vec![42, 69],
+        d: [42, 69],
+        e: Bar {
+            a: 42.0,
+            b: 42,
+            c: vec![42, 69],
+        },
     };
 
     let mut encoder = Encoder::new(&file, "foo").unwrap();
