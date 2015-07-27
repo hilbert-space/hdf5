@@ -263,20 +263,23 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
         panic!("HDF5 does not support nils");
     }
 
-    fn emit_option<F>(&mut self, _: F) -> Result<()>
+    #[inline]
+    fn emit_option<F>(&mut self, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support options");
+        next(self)
     }
 
+    #[inline]
     fn emit_option_none(&mut self) -> Result<()> {
-        panic!("HDF5 does not support options");
+        Ok(())
     }
 
-    fn emit_option_some<F>(&mut self, _: F) -> Result<()>
+    #[inline]
+    fn emit_option_some<F>(&mut self, next: F) -> Result<()>
         where F: FnOnce(&mut Self) -> Result<()>
     {
-        panic!("HDF5 does not support options");
+        next(self)
     }
 
     #[inline]

@@ -23,9 +23,8 @@ fn encode_boolean() {
 
 #[test]
 fn encode_enum() {
-    // let directory = Directory::new("hdf5").unwrap();
-    // let file = File::new(directory.join("data.h5")).unwrap();
-    let file = File::new("data.h5").unwrap();
+    let directory = Directory::new("hdf5").unwrap();
+    let file = File::new(directory.join("data.h5")).unwrap();
 
     #[derive(RustcEncodable)]
     #[allow(dead_code)]
@@ -121,6 +120,15 @@ fn encode_numeric_vector() {
 
         k := vec![42isize, 69isize],
         l := vec![42usize, 69usize],
+    );
+}
+
+#[test]
+fn encode_option() {
+    test!(
+        a := Some(42.0),
+        b := Option::None::<u16>,
+        c := Some(69u8),
     );
 }
 
