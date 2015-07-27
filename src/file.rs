@@ -40,7 +40,7 @@ impl File {
             try!(Link::delete(self, name));
         }
         let data = try!(data.into_data());
-        let dataset = try!(dataset::new(self, name, &data.datatype(), &dataspace));
+        let dataset = try!(dataset::new(self, name, data.datatype(), &dataspace));
         try!(dataset.write(data));
         Ok(())
     }
