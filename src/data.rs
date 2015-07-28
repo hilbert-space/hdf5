@@ -11,7 +11,7 @@ pub trait Data {
     /// Return the raw data.
     fn as_bytes(&self) -> &[u8];
 
-    /// Return the base datatype.
+    /// Return the datatype.
     fn datatype(&self) -> Datatype;
 
     /// Return the dimensions.

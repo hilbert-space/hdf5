@@ -68,13 +68,6 @@ extern crate rustc_serialize;
 
 use std::{error, fmt};
 
-/// An error.
-#[derive(Clone, Debug)]
-pub struct Error(String);
-
-/// A result.
-pub type Result<T> = std::result::Result<T, Error>;
-
 /// An identifier.
 pub type ID = ffi::hid_t;
 
@@ -83,6 +76,13 @@ pub trait Identity {
     /// Return the identifier.
     fn id(&self) -> ID;
 }
+
+/// An error.
+#[derive(Clone, Debug)]
+pub struct Error(String);
+
+/// A result.
+pub type Result<T> = std::result::Result<T, Error>;
 
 macro_rules! identity(
     ($name:ident) => (
@@ -152,13 +152,6 @@ macro_rules! str_to_cstr(
     });
 );
 
-impl Identity for ID {
-    #[inline]
-    fn id(&self) -> ID {
-        *self
-    }
-}
-
 impl fmt::Display for Error {
     #[inline]
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
@@ -170,6 +163,13 @@ impl error::Error for Error {
     #[inline]
     fn description(&self) -> &str {
         &self.0
+    }
+}
+
+impl Identity for ID {
+    #[inline]
+    fn id(&self) -> ID {
+        *self
     }
 }
 

@@ -5,7 +5,13 @@ use data::{Data, IntoData};
 use dataset;
 use dataspace;
 use link::Link;
-use {ID, Result};
+use {ID, Identity, Result};
+
+#[cfg(feature = "serialize")]
+use encoder::Encoder;
+
+#[cfg(feature = "serialize")]
+use rustc_serialize::Encodable;
 
 /// A file.
 pub struct File {
@@ -38,27 +44,22 @@ impl File {
     /// The function is a shortcut for `Encoder::new` followed by
     /// `Encodable::encode`.
     #[cfg(feature = "serialize")]
-    pub fn encode<T: ::rustc_serialize::Encodable>(&self, name: &str, data: T) -> Result<()> {
-        use encoder::Encoder;
-        use rustc_serialize::Encodable;
-
+    pub fn encode<T: Encodable>(&self, name: &str, data: T) -> Result<()> {
         let mut encoder = try!(Encoder::new(self, name));
         data.encode(&mut encoder)
     }
 
     /// Write data.
     ///
-    /// This function writes directly into the file without intermediate buffers
+    /// The function writes directly into the file without intermediate buffers
     /// as it is the case when using encoders.
     pub fn write<T: IntoData>(&self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
-        let dataspace = try!(dataspace::new(data.dimensions()));
+        let dataspace = try!(dataspace::new(data.dimensions(), None));
         if try!(Link::exists(self, name)) {
             try!(Link::delete(self, name));
         }
-        let dataset = try!(dataset::new(self, name, data.datatype(), &dataspace));
-        try!(dataset.write(data));
-        Ok(())
+        try!(dataset::new(self.id, name, data.datatype().id(), dataspace.id(), None)).write(data)
     }
 }
 

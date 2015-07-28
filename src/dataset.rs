@@ -23,13 +23,13 @@ impl Drop for Dataset {
     }
 }
 
-pub fn new<L, T, S>(location: L, name: &str, datatype: T, dataspace: S) -> Result<Dataset>
-    where L: Identity, T: Identity, S: Identity
-{
+pub fn new(location: ID, name: &str, datatype: ID, dataspace: ID, dataspace_creation: Option<ID>)
+           -> Result<Dataset> {
+
+    let dataspace_creation = dataspace_creation.unwrap_or(ffi::H5P_DEFAULT);
     Ok(Dataset {
-        id: ok!(ffi::H5Dcreate2(location.id(), str_to_cstr!(name).as_ptr(), datatype.id(),
-                                dataspace.id(), ffi::H5P_DEFAULT, ffi::H5P_DEFAULT,
-                                ffi::H5P_DEFAULT),
+        id: ok!(ffi::H5Dcreate2(location, str_to_cstr!(name).as_ptr(), datatype, dataspace,
+                                ffi::H5P_DEFAULT, dataspace_creation, ffi::H5P_DEFAULT),
                 "failed to create a dataset {:?}", name),
     })
 }
