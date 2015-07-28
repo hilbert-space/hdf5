@@ -75,6 +75,6 @@ fn overwrite() {
 fn text() {
     test!(
         a := '界',
-        b := "Hello, world!",
+        b := "Hello, 世界!",
     );
 }

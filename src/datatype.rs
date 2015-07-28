@@ -76,5 +76,6 @@ pub fn new_string(length: usize) -> Result<Datatype> {
     let id = ok!(ffi::H5Tcopy(ffi::H5T_C_S1), "failed to create a string datatype");
     ok!(ffi::H5Tset_size(id, length as libc::size_t),
         "failed to set the size of a string datatype");
+    ok!(ffi::H5Tset_cset(id, ffi::H5T_CSET_UTF8));
     Ok(Datatype(Rc::new(Inner { id: id, owned: true })))
 }
