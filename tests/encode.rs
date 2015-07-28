@@ -14,7 +14,7 @@ macro_rules! test(
 );
 
 #[test]
-fn encode_boolean() {
+fn boolean() {
     test!(
         a := true,
         b := false,
@@ -22,7 +22,7 @@ fn encode_boolean() {
 }
 
 #[test]
-fn encode_enum() {
+fn enumeration() {
     let directory = Directory::new("hdf5").unwrap();
     let file = File::new(directory.join("data.h5")).unwrap();
 
@@ -41,7 +41,7 @@ fn encode_enum() {
 }
 
 #[test]
-fn encode_compound() {
+fn compound() {
     let directory = Directory::new("hdf5").unwrap();
     let file = File::new(directory.join("data.h5")).unwrap();
 
@@ -78,7 +78,7 @@ fn encode_compound() {
 }
 
 #[test]
-fn encode_numberic_scalar() {
+fn numberic_scalar() {
     test!(
         a := 42f32,
         b := 42f64,
@@ -101,7 +101,7 @@ fn encode_numberic_scalar() {
 }
 
 #[test]
-fn encode_numeric_vector() {
+fn numeric_vector() {
     test!(
         a := vec![42f32, 69f32],
         b := vec![42f64, 69f64],
@@ -124,7 +124,7 @@ fn encode_numeric_vector() {
 }
 
 #[test]
-fn encode_option() {
+fn option() {
     test!(
         a := Some(42.0),
         b := Option::None::<u16>,
@@ -133,7 +133,7 @@ fn encode_option() {
 }
 
 #[test]
-fn encode_text() {
+fn text() {
     test!(
         a := '界',
         b := "Hello, 世界!",
