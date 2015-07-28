@@ -28,7 +28,6 @@
 //! # extern crate temporary;
 //!
 //! use hdf5::{Encoder, File};
-//! use rustc_serialize::Encodable;
 //! # use temporary::Directory;
 //!
 //! #[derive(RustcEncodable)]
@@ -55,8 +54,7 @@
 //! # let path = directory.join(path);
 //! let file = File::new(path).unwrap();
 //!
-//! let mut encoder = Encoder::new(&file, "foo").unwrap();
-//! foo.encode(&mut encoder).unwrap()
+//! file.encode("foo", &foo).unwrap();
 //! # }
 //!
 //! [1]: http://www.hdfgroup.org/HDF5

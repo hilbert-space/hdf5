@@ -33,7 +33,23 @@ impl File {
         })
     }
 
+    /// Encode data.
+    ///
+    /// The function is a shortcut for `Encoder::new` followed by
+    /// `Encodable::encode`.
+    #[cfg(feature = "serialize")]
+    pub fn encode<T: ::rustc_serialize::Encodable>(&self, name: &str, data: T) -> Result<()> {
+        use encoder::Encoder;
+        use rustc_serialize::Encodable;
+
+        let mut encoder = try!(Encoder::new(self, name));
+        data.encode(&mut encoder)
+    }
+
     /// Write data.
+    ///
+    /// This function writes directly into the file without intermediate buffers
+    /// as it is the case when using encoders.
     pub fn write<T: IntoData>(&self, name: &str, data: T) -> Result<()> {
         let dataspace = try!(dataspace::new(&[1]));
         if try!(Link::exists(self, name)) {

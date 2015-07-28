@@ -25,7 +25,6 @@ extern crate hdf5;
 extern crate rustc_serialize;
 
 use hdf5::{Encoder, File};
-use rustc_serialize::Encodable;
 
 #[derive(RustcEncodable)]
 struct Foo {
@@ -48,8 +47,7 @@ let foo = Foo {
 let path = "data.h5";
 let file = File::new(path).unwrap();
 
-let mut encoder = Encoder::new(&file, "foo").unwrap();
-foo.encode(&mut encoder).unwrap()
+file.encode("foo", &foo).unwrap();
 ```
 
 ## Contributing
