@@ -13,6 +13,12 @@ struct Inner {
     owned: bool,
 }
 
+macro_rules! new(
+    ($id:expr, $owned: expr) => (
+        Datatype(Rc::new(Inner { id: $id, owned: $owned }))
+    );
+);
+
 impl Datatype {
     /// Return the size in bytes.
     pub fn size(&self) -> Result<usize> {
@@ -56,12 +62,12 @@ pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
                            datatype.id()));
         offset += size;
     }
-    Ok(Datatype(Rc::new(Inner { id: id, owned: true })))
+    Ok(new!(id, true))
 }
 
 #[inline]
 pub fn new_predefined(id: ID) -> Datatype {
-    Datatype(Rc::new(Inner { id: id, owned: false }))
+    new!(id, false)
 }
 
 pub fn new_string(length: usize) -> Result<Datatype> {
@@ -69,5 +75,5 @@ pub fn new_string(length: usize) -> Result<Datatype> {
     ok!(ffi::H5Tset_size(id, length as libc::size_t),
         "failed to set the size of a string datatype");
     ok!(ffi::H5Tset_cset(id, ffi::H5T_CSET_UTF8));
-    Ok(Datatype(Rc::new(Inner { id: id, owned: true })))
+    Ok(new!(id, true))
 }
