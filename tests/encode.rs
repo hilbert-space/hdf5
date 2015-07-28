@@ -136,6 +136,6 @@ fn option() {
 fn text() {
     test!(
         a := '界',
-        b := "Hello, 世界!",
+        b := "Hello, world!",
     );
 }

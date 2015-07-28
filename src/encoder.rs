@@ -1,7 +1,7 @@
 use rustc_serialize;
 use std::mem;
 
-use data::Data;
+use data::{Data, IntoData};
 use datatype::{self, Datatype};
 use file::File;
 use {Error, Result};
@@ -298,7 +298,7 @@ impl<'l> rustc_serialize::Encoder for Encoder<'l> {
 
     #[inline]
     fn emit_str(&mut self, value: &str) -> Result<()> {
-        self.element(value)
+        self.element(try!(value.into_data()))
     }
 
     #[inline]

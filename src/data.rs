@@ -23,7 +23,7 @@ pub trait IntoData {
 }
 
 /// A slice.
-pub struct Slice<'l, T: Data + 'l> {
+pub struct Slice<'l, T: 'l> {
     data: &'l [T],
     datatype: Datatype,
 }
@@ -94,7 +94,7 @@ implement!(isize, ffi::H5T_NATIVE_INT64);
 #[cfg(target_pointer_width = "64")]
 implement!(usize, ffi::H5T_NATIVE_UINT64);
 
-impl<'l, T: Data> Data for Slice<'l, T> {
+impl<'l, T> Data for Slice<'l, T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {
         unsafe {
@@ -109,23 +109,21 @@ impl<'l, T: Data> Data for Slice<'l, T> {
     }
 }
 
-impl<'l> Data for &'l str {
-    #[inline]
-    fn as_bytes(&self) -> &[u8] {
-        str::as_bytes(self)
-    }
-
-    #[inline]
-    fn datatype(&self) -> Datatype {
-        datatype::new_foreign(ffi::H5T_C_S1)
-    }
-}
-
 impl<T: Data> IntoData for T {
     type Target = T;
 
     #[inline]
     fn into_data(self) -> Result<Self::Target> {
         Ok(self)
+    }
+}
+
+impl<'l> IntoData for &'l str {
+    type Target = Slice<'l, u8>;
+
+    #[inline]
+    fn into_data(self) -> Result<Self::Target> {
+        let datatype = try!(datatype::new_string(self.len()));
+        Ok(Slice { data: self.as_bytes(), datatype: datatype })
     }
 }
