@@ -22,6 +22,7 @@ enum State {
 struct Sequence {
     data: Vec<u8>,
     datatype: Option<Datatype>,
+    length: usize,
 }
 
 struct Structure {
@@ -32,6 +33,7 @@ struct Structure {
 struct Blob {
     data: Vec<u8>,
     datatype: Datatype,
+    dimensions: [usize; 1],
 }
 
 impl<'l> Encoder<'l> {
@@ -67,6 +69,7 @@ impl<'l> Encoder<'l> {
                     sequence.datatype = Some(data.datatype());
                 }
                 copy(data.as_bytes(), &mut sequence.data);
+                sequence.length += 1;
                 Ok(())
             },
             State::Structure(ref mut structure) => match self.name.take() {
@@ -113,22 +116,17 @@ impl<'l> Encoder<'l> {
 impl Sequence {
     #[inline]
     fn new() -> Sequence {
-        Sequence { data: vec![], datatype: None }
+        Sequence { data: vec![], datatype: None, length: 0 }
     }
 
     fn coagulate(self) -> Result<Blob> {
-        let Sequence { data, datatype } = self;
+        let Sequence { data, datatype, length } = self;
         let datatype = match datatype {
-            Some(datatype) => {
-                let size = try!(datatype.size());
-                if data.len() % size != 0 {
-                    raise!("encountered malformed array data");
-                }
-                try!(datatype::new_array(datatype, &[data.len() / size]))
-            },
+            Some(datatype) => datatype,
             _ => raise!("cannot infer the datatype of empty arrays"),
         };
-        Ok(Blob { data: data, datatype: datatype })
+        debug_assert_eq!(length * datatype.size().unwrap(), data.len());
+        Ok(Blob { data: data, datatype: datatype, dimensions: [length] })
     }
 }
 
@@ -140,7 +138,7 @@ impl Structure {
     fn coagulate(self) -> Result<Blob> {
         let Structure { data, fields } = self;
         let datatype = try!(datatype::new_compound(&fields));
-        Ok(Blob { data: data, datatype: datatype })
+        Ok(Blob { data: data, datatype: datatype, dimensions: [1] })
     }
 }
 
@@ -153,6 +151,11 @@ impl Data for Blob {
     #[inline]
     fn datatype(&self) -> Datatype {
         self.datatype.clone()
+    }
+
+    #[inline]
+    fn dimensions(&self) -> &[usize] {
+        &self.dimensions
     }
 }
 

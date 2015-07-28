@@ -4,13 +4,18 @@ use std::{mem, slice};
 use Result;
 use datatype::{self, Datatype};
 
+const SCALAR_DIMENSIONS: &'static [usize] = &[1];
+
 /// A type suitable for storing.
 pub trait Data {
-    /// Return the data.
+    /// Return the raw data.
     fn as_bytes(&self) -> &[u8];
 
-    /// Return the datatype.
+    /// Return the base datatype.
     fn datatype(&self) -> Datatype;
+
+    /// Return the dimensions.
+    fn dimensions(&self) -> &[usize];
 }
 
 /// A type capable of converting itself into data.
@@ -26,6 +31,7 @@ pub trait IntoData {
 pub struct Slice<'l, T: 'l> {
     data: &'l [T],
     datatype: Datatype,
+    dimensions: [usize; 1],
 }
 
 macro_rules! implement(
@@ -40,7 +46,12 @@ macro_rules! implement(
 
             #[inline]
             fn datatype(&self) -> Datatype {
-                datatype::new_foreign($datatype)
+                datatype::new_predefined($datatype)
+            }
+
+            #[inline]
+            fn dimensions(&self) -> &[usize] {
+                SCALAR_DIMENSIONS
             }
         }
 
@@ -49,8 +60,11 @@ macro_rules! implement(
 
             #[inline]
             fn into_data(self) -> Result<Self::Target> {
-                let datatype = try!(datatype::new_array($datatype, &[self.len()]));
-                Ok(Slice { data: self, datatype: datatype })
+                Ok(Slice {
+                    data: self,
+                    datatype: datatype::new_predefined($datatype),
+                    dimensions: [self.len()],
+                })
             }
         }
 
@@ -107,6 +121,11 @@ impl<'l, T> Data for Slice<'l, T> {
     fn datatype(&self) -> Datatype {
         self.datatype.clone()
     }
+
+    #[inline]
+    fn dimensions(&self) -> &[usize] {
+        &self.dimensions
+    }
 }
 
 impl<T: Data> IntoData for T {
@@ -124,6 +143,6 @@ impl<'l> IntoData for &'l str {
     #[inline]
     fn into_data(self) -> Result<Self::Target> {
         let datatype = try!(datatype::new_string(self.len()));
-        Ok(Slice { data: self.as_bytes(), datatype: datatype })
+        Ok(Slice { data: self.as_bytes(), datatype: datatype, dimensions: [1] })
     }
 }

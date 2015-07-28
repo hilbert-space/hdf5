@@ -51,11 +51,11 @@ impl File {
     /// This function writes directly into the file without intermediate buffers
     /// as it is the case when using encoders.
     pub fn write<T: IntoData>(&self, name: &str, data: T) -> Result<()> {
-        let dataspace = try!(dataspace::new(&[1]));
+        let data = try!(data.into_data());
+        let dataspace = try!(dataspace::new(data.dimensions()));
         if try!(Link::exists(self, name)) {
             try!(Link::delete(self, name));
         }
-        let data = try!(data.into_data());
         let dataset = try!(dataset::new(self, name, data.datatype(), &dataspace));
         try!(dataset.write(data));
         Ok(())

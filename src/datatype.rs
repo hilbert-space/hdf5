@@ -46,14 +46,6 @@ impl PartialEq for Datatype {
     }
 }
 
-pub fn new_array<T: Identity>(datatype: T, dimensions: &[usize]) -> Result<Datatype> {
-    let dimensions = dimensions.iter().map(|&size| size as ffi::hsize_t).collect::<Vec<_>>();
-    let id = ok!(ffi::H5Tarray_create2(datatype.id(), dimensions.len() as libc::c_uint,
-                                       dimensions.as_ptr()),
-                 "failed to create a datatype");
-    Ok(Datatype(Rc::new(Inner { id: id, owned: true })))
-}
-
 #[cfg(feature = "serialize")]
 pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
     let size = fields.iter().fold(0, |sum, &(_, _, size)| sum + size) as libc::size_t;
@@ -68,7 +60,7 @@ pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
 }
 
 #[inline]
-pub fn new_foreign(id: ID) -> Datatype {
+pub fn new_predefined(id: ID) -> Datatype {
     Datatype(Rc::new(Inner { id: id, owned: false }))
 }
 
