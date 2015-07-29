@@ -1,6 +1,7 @@
 use ffi;
 
 use data::Data;
+use dataspace::{self, Dataspace};
 use {ID, Identity, Result};
 
 pub struct Dataset {
@@ -10,10 +11,14 @@ pub struct Dataset {
 identity!(Dataset);
 
 impl Dataset {
-    pub fn write<T: Data>(&self, data: T) -> Result<()> {
-        ok!(ffi::H5Dwrite(self.id, data.datatype().id(), ffi::H5S_ALL, ffi::H5S_ALL,
+    pub fn write<T: Data>(&self, data: T, memory_space: ID, file_space: ID) -> Result<()> {
+        ok!(ffi::H5Dwrite(self.id, data.datatype().id(), memory_space, file_space,
                           ffi::H5P_DEFAULT, data.as_bytes().as_ptr() as *const _));
         Ok(())
+    }
+
+    pub fn space(&self) -> Result<Dataspace> {
+        Ok(dataspace::from_raw(ok!(ffi::H5Dget_space(self.id), "failed to get the dataspace")))
     }
 }
 

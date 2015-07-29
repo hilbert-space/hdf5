@@ -8,10 +8,10 @@ macro_rules! test(
         $({
             let value = $value;
             let value = value.into_data().unwrap();
-            let position = vec![0; value.dimensions().len()];
+            let dimensions = value.dimensions();
             let mut writer = Writer::new(&mut file, stringify!($name), value.datatype(),
-                                         value.dimensions()).unwrap();
-            writer.write(value, &position).unwrap();
+                                         dimensions).unwrap();
+            writer.write(&value, &vec![0; dimensions.len()], dimensions).unwrap();
         })*
     });
 );
@@ -76,6 +76,18 @@ fn overwrite() {
         a := 42f32,
         a := 42f64,
     );
+}
+
+#[test]
+fn patch() {
+    let directory = Directory::new("hdf5").unwrap();
+    let mut file = File::new(directory.join("data.h5")).unwrap();
+
+    let mut writer = Writer::new(&mut file, "foo", 0u8.datatype(), &[10, 10]).unwrap();
+
+    writer.write(&vec![0u8; 10 * 10], &[0, 0], &[10, 10]).unwrap();
+    writer.write(42u8, &[4, 2], &[1, 1]).unwrap();
+    writer.write(69u8, &[6, 9], &[1, 1]).unwrap();
 }
 
 #[test]

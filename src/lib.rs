@@ -150,6 +150,12 @@ macro_rules! str_to_cstr(
     });
 );
 
+macro_rules! product(
+    ($vector:expr) => (
+        $vector.iter().fold(1, |result, &next| result * next)
+    );
+);
+
 impl fmt::Display for Error {
     #[inline]
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {

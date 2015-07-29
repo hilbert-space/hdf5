@@ -50,12 +50,12 @@ impl File {
     /// Write data.
     ///
     /// The function is a shortcut for `Writer::new` followed by
-    /// `Writer::write`.
+    /// `Writer::write` when all data should be written at once.
     pub fn write<T: IntoData>(&mut self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
-        let dimensions = data.dimensions().len();
-        let mut writer = try!(Writer::new(self, name, data.datatype(), data.dimensions()));
-        writer.write(data, &vec![0; dimensions])
+        let dimensions = data.dimensions();
+        let mut writer = try!(Writer::new(self, name, data.datatype(), dimensions));
+        writer.write(&data, &vec![0; dimensions.len()], dimensions)
     }
 }
 

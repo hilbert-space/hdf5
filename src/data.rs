@@ -108,6 +108,23 @@ implement!(isize, ffi::H5T_NATIVE_INT64);
 #[cfg(target_pointer_width = "64")]
 implement!(usize, ffi::H5T_NATIVE_UINT64);
 
+impl<'l, T: Data> Data for &'l T {
+    #[inline]
+    fn as_bytes(&self) -> &[u8] {
+        (*self).as_bytes()
+    }
+
+    #[inline]
+    fn datatype(&self) -> Datatype {
+        (*self).datatype()
+    }
+
+    #[inline]
+    fn dimensions(&self) -> &[usize] {
+        (*self).dimensions()
+    }
+}
+
 impl<'l, T> Data for Slice<'l, T> {
     #[inline]
     fn as_bytes(&self) -> &[u8] {

@@ -1,4 +1,3 @@
-use ffi;
 use std::marker::PhantomData;
 
 use data::{Data, IntoData};
@@ -37,26 +36,32 @@ impl<'l> Writer<'l> {
         })
     }
 
-    /// Write a chunk of data.
-    pub fn write<T: IntoData>(&mut self, data: T, position: &[usize]) -> Result<()> {
+    /// Write data.
+    ///
+    /// The function writes a patch of data at a particular position with a
+    /// particular size.
+    pub fn write<T: IntoData>(&mut self, data: T, position: &[usize], size: &[usize])
+                              -> Result<()> {
+
         let data = try!(data.into_data());
 
         if self.datatype != data.datatype() {
             raise!("the data should have the claimed datatype");
         }
-        if self.dimensions != data.dimensions().len() {
-            raise!("the data should have the claimed number of dimensions");
-        }
         if self.dimensions != position.len() {
             raise!("the position should have the claimed number of dimensions");
         }
+        if self.dimensions != size.len() {
+            raise!("the size should have the claimed number of dimensions");
+        }
+        if product!(data.dimensions()) != product!(size) {
+            raise!("the data should have the claimed number of elements");
+        }
 
-        let dataspace = ok!(ffi::H5Dget_space(self.dataset.id()), "failed to get the dataspace");
-        ok!(ffi::H5Sselect_hyperslab(dataspace, ffi::H5S_SELECT_SET, position.as_ptr() as *const _,
-                                     0 as *const _, data.dimensions().as_ptr() as *const _,
-                                     0 as *const _),
-            "failed to select the hyperslab region");
+        let memory_space = try!(dataspace::new(size));
+        let file_space = try!(self.dataset.space());
+        try!(file_space.select(position, size));
 
-        self.dataset.write(data)
+        self.dataset.write(data, memory_space.id(), file_space.id())
     }
 }
