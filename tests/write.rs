@@ -90,6 +90,23 @@ fn patch() {
 }
 
 #[test]
+fn reopen() {
+    let directory = Directory::new("hdf5").unwrap();
+    {
+        let mut file = File::new(directory.join("data.h5")).unwrap();
+        file.write("a", 42).unwrap();
+    }
+    {
+        let mut file = File::new(directory.join("data.h5")).unwrap();
+        file.write("a", 42).unwrap();
+    }
+    {
+        let mut file = File::open(directory.join("data.h5")).unwrap();
+        file.write("a", 42).unwrap();
+    }
+}
+
+#[test]
 fn text() {
     test!(
         a := '界',
