@@ -52,6 +52,11 @@ impl PartialEq for Datatype {
     }
 }
 
+#[inline]
+pub fn from_raw_borrowed(id: ID) -> Datatype {
+    new!(id, false)
+}
+
 #[cfg(feature = "serialize")]
 pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
     let size = fields.iter().fold(0, |sum, &(_, _, size)| sum + size) as libc::size_t;
@@ -63,11 +68,6 @@ pub fn new_compound(fields: &[(String, Datatype, usize)]) -> Result<Datatype> {
         offset += size;
     }
     Ok(new!(id, true))
-}
-
-#[inline]
-pub fn new_predefined(id: ID) -> Datatype {
-    new!(id, false)
 }
 
 pub fn new_string(length: usize) -> Result<Datatype> {

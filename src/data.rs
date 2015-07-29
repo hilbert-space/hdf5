@@ -46,7 +46,7 @@ macro_rules! implement(
 
             #[inline]
             fn datatype(&self) -> Datatype {
-                datatype::new_predefined($datatype)
+                datatype::from_raw_borrowed($datatype)
             }
 
             #[inline]
@@ -62,7 +62,7 @@ macro_rules! implement(
             fn into_data(self) -> Result<Self::Target> {
                 Ok(Slice {
                     data: self,
-                    datatype: datatype::new_predefined($datatype),
+                    datatype: datatype::from_raw_borrowed($datatype),
                     dimensions: [self.len()],
                 })
             }
