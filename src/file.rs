@@ -55,11 +55,11 @@ impl File {
     /// as it is the case when using encoders.
     pub fn write<T: IntoData>(&self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
-        let dataspace = try!(dataspace::new(data.dimensions(), None));
-        if try!(Link::exists(self, name)) {
-            try!(Link::delete(self, name));
+        let dataspace = try!(dataspace::new(data.dimensions()));
+        if try!(Link::exists(self.id, name)) {
+            try!(Link::delete(self.id, name));
         }
-        try!(dataset::new(self.id, name, data.datatype().id(), dataspace.id(), None)).write(data)
+        try!(dataset::new(self.id, name, data.datatype().id(), dataspace.id())).write(data)
     }
 }
 
