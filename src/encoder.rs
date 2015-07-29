@@ -40,6 +40,8 @@ struct Blob {
 
 impl<'l> Encoder<'l> {
     /// Create an encoder.
+    ///
+    /// If the dataset already exists, it will be overwritten.
     pub fn new(file: &'l mut File, name: &str) -> Encoder<'l> {
         Encoder { file: file, name: Some(name.to_string()), state: State::Uncertain }
     }
