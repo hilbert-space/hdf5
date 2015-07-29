@@ -20,7 +20,7 @@
 //! # }
 //! ```
 //!
-//! Complex structures can be written using [`rustc-serialize`][2] as follows:
+//! Structural data can be written using [`rustc-serialize`][2] as follows:
 //!
 //! ```
 //! extern crate hdf5;

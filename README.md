@@ -18,7 +18,7 @@ file.write("foo", 42).unwrap();
 file.write("bar", &vec![42.0, 69.0]).unwrap();
 ```
 
-Complex structures can be written using [`rustc-serialize`][2] as follows:
+Structural data can be written using [`rustc-serialize`][2] as follows:
 
 ```rust
 extern crate hdf5;
