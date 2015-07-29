@@ -68,30 +68,29 @@ extern crate rustc_serialize;
 
 use std::{error, fmt};
 
-/// An identifier.
-pub type ID = ffi::hid_t;
-
-trait Raw {
-    fn id(&self) -> ID;
-}
-
 /// An error.
 #[derive(Clone, Debug)]
 pub struct Error(String);
 
+/// An identifier.
+pub type ID = ffi::hid_t;
+
+/// A type with an identifier.
+pub trait Identity {
+    /// Return the identifier.
+    fn id(&self) -> ID;
+}
+
+/// A location.
+pub trait Location: Identity {
+}
+
 /// A result.
 pub type Result<T> = std::result::Result<T, Error>;
 
-macro_rules! raw(
+macro_rules! identity(
     ($name:ident) => (
-        impl ::Raw for $name {
-            #[inline]
-            fn id(&self) -> ::ID {
-                self.id
-            }
-        }
-
-        impl<'l> ::Raw for &'l $name {
+        impl ::Identity for $name {
             #[inline]
             fn id(&self) -> ::ID {
                 self.id
@@ -100,8 +99,11 @@ macro_rules! raw(
     );
 );
 
-macro_rules! raise(
-    ($($arg:tt)*) => (return Err(::Error(format!($($arg)*))));
+macro_rules! location(
+    ($name:ident) => (
+        impl ::Location for $name {
+        }
+    );
 );
 
 macro_rules! ok(
@@ -121,12 +123,6 @@ macro_rules! ok(
     });
 );
 
-macro_rules! whatever(
-    ($call:expr) => ({
-        let _ = unsafe { $call };
-    });
-);
-
 macro_rules! path_to_cstr(
     ($path:expr) => ({
         let path = $path;
@@ -140,6 +136,16 @@ macro_rules! path_to_cstr(
     });
 );
 
+macro_rules! product(
+    ($vector:expr) => (
+        $vector.iter().fold(1, |result, &next| result * next)
+    );
+);
+
+macro_rules! raise(
+    ($($arg:tt)*) => (return Err(::Error(format!($($arg)*))));
+);
+
 macro_rules! str_to_cstr(
     ($string:expr) => ({
         let string = $string;
@@ -150,10 +156,10 @@ macro_rules! str_to_cstr(
     });
 );
 
-macro_rules! product(
-    ($vector:expr) => (
-        $vector.iter().fold(1, |result, &next| result * next)
-    );
+macro_rules! whatever(
+    ($call:expr) => ({
+        let _ = unsafe { $call };
+    });
 );
 
 impl fmt::Display for Error {
@@ -168,6 +174,16 @@ impl error::Error for Error {
     fn description(&self) -> &str {
         &self.0
     }
+}
+
+impl<'l, T: Identity> Identity for &'l T {
+    #[inline]
+    fn id(&self) -> ID {
+        (*self).id()
+    }
+}
+
+impl<'l, T: Location> Location for &'l T {
 }
 
 /// Return the version number of HDF5.

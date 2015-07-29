@@ -7,7 +7,7 @@ pub struct Dataspace {
     id: ID,
 }
 
-raw!(Dataspace);
+identity!(Dataspace);
 
 impl Dataspace {
     pub fn select(&self, position: &[usize], size: &[usize]) -> Result<()> {

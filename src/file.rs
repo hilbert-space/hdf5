@@ -3,7 +3,7 @@ use std::path::Path;
 
 use data::{Data, IntoData};
 use writer::Writer;
-use {ID, Raw, Result};
+use {ID, Identity, Result};
 
 #[cfg(feature = "serialize")]
 use encoder::Encoder;
@@ -16,7 +16,8 @@ pub struct File {
     id: ID,
 }
 
-raw!(File);
+identity!(File);
+location!(File);
 
 impl File {
     /// Create a file.

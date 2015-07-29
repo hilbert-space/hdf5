@@ -1,21 +1,18 @@
-use std::marker::PhantomData;
-
 use data::{Data, IntoData};
 use dataset::{self, Dataset};
 use dataspace;
 use datatype::Datatype;
 use file::File;
 use link::Link;
-use {ID, Raw, Result};
+use {Location, Result};
 
 /// A writer.
 pub struct Writer<'l> {
-    state: State,
-    phantom: PhantomData<&'l mut File>,
+    state: State<'l>,
 }
 
-enum State {
-    Setup { location: ID, name: String, dimensions: Vec<usize> },
+enum State<'l> {
+    Setup { location: &'l File, name: String, dimensions: Vec<usize> },
     Ready(Inner),
 }
 
@@ -30,11 +27,10 @@ impl<'l> Writer<'l> {
     pub fn new(file: &'l mut File, name: &str, dimensions: &[usize]) -> Writer<'l> {
         Writer {
             state: State::Setup {
-                location: file.id(),
+                location: file,
                 name: name.to_string(),
                 dimensions: dimensions.to_vec(),
             },
-            phantom: PhantomData,
         }
     }
 
@@ -58,12 +54,14 @@ impl<'l> Writer<'l> {
 }
 
 impl Inner {
-    fn new(location: ID, name: &str, datatype: Datatype, dimensions: &[usize]) -> Result<Inner> {
-        if try!(Link::exists(location, name)) {
-            try!(Link::delete(location, name));
+    fn new<T: Location>(location: T, name: &str, datatype: Datatype, dimensions: &[usize])
+                        -> Result<Inner> {
+
+        if try!(Link::exists(&location, name)) {
+            try!(Link::delete(&location, name));
         }
         let dataspace = try!(dataspace::new(dimensions));
-        let dataset = try!(dataset::new(location, name, &datatype, &dataspace));
+        let dataset = try!(dataset::new(&location, name, &datatype, &dataspace));
         Ok(Inner { dataset: dataset, datatype: datatype, dimensions: dimensions.len() })
     }
 

@@ -3,13 +3,13 @@ use ffi;
 use data::Data;
 use dataspace::{self, Dataspace};
 use datatype::Datatype;
-use {ID, Raw, Result};
+use {ID, Identity, Location, Result};
 
 pub struct Dataset {
     id: ID,
 }
 
-raw!(Dataset);
+identity!(Dataset);
 
 impl Dataset {
     pub fn write<T: Data>(&self, data: T, memory_space: &Dataspace, file_space: &Dataspace)
@@ -32,11 +32,11 @@ impl Drop for Dataset {
     }
 }
 
-pub fn new(location: ID, name: &str, datatype: &Datatype, dataspace: &Dataspace)
-           -> Result<Dataset> {
+pub fn new<T: Location>(location: T, name: &str, datatype: &Datatype, dataspace: &Dataspace)
+                        -> Result<Dataset> {
 
     Ok(Dataset {
-        id: ok!(ffi::H5Dcreate2(location, str_to_cstr!(name).as_ptr(), datatype.id(),
+        id: ok!(ffi::H5Dcreate2(location.id(), str_to_cstr!(name).as_ptr(), datatype.id(),
                                 dataspace.id(), ffi::H5P_DEFAULT, ffi::H5P_DEFAULT,
                                 ffi::H5P_DEFAULT),
                 "failed to create a dataset {:?}", name),
