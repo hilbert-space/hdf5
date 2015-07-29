@@ -13,7 +13,8 @@ identity!(Dataset);
 impl Dataset {
     pub fn write<T: Data>(&self, data: T, memory_space: ID, file_space: ID) -> Result<()> {
         ok!(ffi::H5Dwrite(self.id, data.datatype().id(), memory_space, file_space,
-                          ffi::H5P_DEFAULT, data.as_bytes().as_ptr() as *const _));
+                          ffi::H5P_DEFAULT, data.as_bytes().as_ptr() as *const _),
+            "failed to write the data");
         Ok(())
     }
 

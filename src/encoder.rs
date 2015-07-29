@@ -38,8 +38,8 @@ struct Blob {
 
 impl<'l> Encoder<'l> {
     /// Create an encoder.
-    pub fn new(file: &'l mut File, name: &str) -> Result<Encoder<'l>> {
-        Ok(Encoder { file: file, name: Some(name.to_string()), state: State::Uncertain })
+    pub fn new(file: &'l mut File, name: &str) -> Encoder<'l> {
+        Encoder { file: file, name: Some(name.to_string()), state: State::Uncertain }
     }
 
     fn element<T: Data>(&mut self, data: T) -> Result<()> {

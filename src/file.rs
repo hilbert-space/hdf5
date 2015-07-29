@@ -43,7 +43,7 @@ impl File {
     /// `Encodable::encode`.
     #[cfg(feature = "serialize")]
     pub fn encode<T: Encodable>(&mut self, name: &str, data: T) -> Result<()> {
-        let mut encoder = try!(Encoder::new(self, name));
+        let mut encoder = Encoder::new(self, name);
         data.encode(&mut encoder)
     }
 
@@ -54,7 +54,7 @@ impl File {
     pub fn write<T: IntoData>(&mut self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
         let dimensions = data.dimensions();
-        let mut writer = try!(Writer::new(self, name, data.datatype(), dimensions));
+        let mut writer = Writer::new(self, name, dimensions);
         writer.write(&data, &vec![0; dimensions.len()], dimensions)
     }
 }

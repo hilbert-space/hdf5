@@ -24,7 +24,7 @@ Complex structures can be written using [`rustc-serialize`][2] as follows:
 extern crate hdf5;
 extern crate rustc_serialize;
 
-use hdf5::{Encoder, File};
+use hdf5::File;
 
 #[derive(RustcEncodable)]
 struct Foo {

@@ -6,45 +6,68 @@ use dataspace;
 use datatype::Datatype;
 use file::File;
 use link::Link;
-use {Identity, Result};
+use {ID, Identity, Result};
 
 /// A writer.
 pub struct Writer<'l> {
+    state: State,
+    phantom: PhantomData<&'l mut File>,
+}
+
+enum State {
+    Setup { location: ID, name: String, dimensions: Vec<usize> },
+    Ready(Inner),
+}
+
+struct Inner {
     dataset: Dataset,
     datatype: Datatype,
     dimensions: usize,
-    phantom: PhantomData<&'l mut File>,
 }
 
 impl<'l> Writer<'l> {
     /// Create a writer.
-    pub fn new(file: &'l mut File, name: &str, datatype: Datatype, dimensions: &[usize])
-               -> Result<Writer<'l>> {
-
-        if try!(Link::exists(file.id(), name)) {
-            try!(Link::delete(file.id(), name));
-        }
-
-        let dataspace = try!(dataspace::new(dimensions));
-        let dataset = try!(dataset::new(file.id(), name, datatype.id(), dataspace.id()));
-
-        Ok(Writer {
-            dataset: dataset,
-            datatype: datatype,
-            dimensions: dimensions.len(),
+    pub fn new(file: &'l mut File, name: &str, dimensions: &[usize]) -> Writer<'l> {
+        Writer {
+            state: State::Setup {
+                location: file.id(),
+                name: name.to_string(),
+                dimensions: dimensions.to_vec(),
+            },
             phantom: PhantomData,
-        })
+        }
     }
 
     /// Write data.
     ///
-    /// The function writes a patch of data at a particular position with a
+    /// The function writes a chunk of data at a particular position with a
     /// particular size.
     pub fn write<T: IntoData>(&mut self, data: T, position: &[usize], size: &[usize])
                               -> Result<()> {
 
         let data = try!(data.into_data());
+        let state = match self.state {
+            State::Ready(ref mut inner) => return inner.write(data, position, size),
+            State::Setup { location, ref name, ref dimensions } => {
+                State::Ready(try!(Inner::new(location, name, data.datatype(), dimensions)))
+            },
+        };
+        self.state = state;
+        self.write(data, position, size)
+    }
+}
 
+impl Inner {
+    fn new(location: ID, name: &str, datatype: Datatype, dimensions: &[usize]) -> Result<Inner> {
+        if try!(Link::exists(location, name)) {
+            try!(Link::delete(location, name));
+        }
+        let dataspace = try!(dataspace::new(dimensions));
+        let dataset = try!(dataset::new(location, name, datatype.id(), dataspace.id()));
+        Ok(Inner { dataset: dataset, datatype: datatype, dimensions: dimensions.len() })
+    }
+
+    fn write<T: Data>(&mut self, data: T, position: &[usize], size: &[usize]) -> Result<()> {
         if self.datatype != data.datatype() {
             raise!("the data should have the claimed datatype");
         }

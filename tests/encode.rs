@@ -7,7 +7,7 @@ macro_rules! test(
         let directory = Directory::new("hdf5").unwrap();
         let mut file = File::new(directory.join("data.h5")).unwrap();
         $({
-            let mut encoder = Encoder::new(&mut file, stringify!($name)).unwrap();
+            let mut encoder = Encoder::new(&mut file, stringify!($name));
             $value.encode(&mut encoder).unwrap();
         })*
     });
@@ -36,7 +36,7 @@ fn enumeration() {
 
     let foo = Foo::Bar;
 
-    let mut encoder = Encoder::new(&mut file, "foo").unwrap();
+    let mut encoder = Encoder::new(&mut file, "foo");
     foo.encode(&mut encoder).unwrap();
 }
 
@@ -73,7 +73,7 @@ fn compound() {
         },
     };
 
-    let mut encoder = Encoder::new(&mut file, "foo").unwrap();
+    let mut encoder = Encoder::new(&mut file, "foo");
     foo.encode(&mut encoder).unwrap();
 }
 

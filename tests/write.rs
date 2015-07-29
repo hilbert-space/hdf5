@@ -9,8 +9,7 @@ macro_rules! test(
             let value = $value;
             let value = value.into_data().unwrap();
             let dimensions = value.dimensions();
-            let mut writer = Writer::new(&mut file, stringify!($name), value.datatype(),
-                                         dimensions).unwrap();
+            let mut writer = Writer::new(&mut file, stringify!($name), dimensions);
             writer.write(&value, &vec![0; dimensions.len()], dimensions).unwrap();
         })*
     });
@@ -83,7 +82,7 @@ fn patch() {
     let directory = Directory::new("hdf5").unwrap();
     let mut file = File::new(directory.join("data.h5")).unwrap();
 
-    let mut writer = Writer::new(&mut file, "foo", 0u8.datatype(), &[10, 10]).unwrap();
+    let mut writer = Writer::new(&mut file, "foo", &[10, 10]);
 
     writer.write(&vec![0u8; 10 * 10], &[0, 0], &[10, 10]).unwrap();
     writer.write(42u8, &[4, 2], &[1, 1]).unwrap();

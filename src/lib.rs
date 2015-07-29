@@ -27,7 +27,7 @@
 //! extern crate rustc_serialize;
 //! # extern crate temporary;
 //!
-//! use hdf5::{Encoder, File};
+//! use hdf5::File;
 //! # use temporary::Directory;
 //!
 //! #[derive(RustcEncodable)]
