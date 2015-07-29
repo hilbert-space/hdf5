@@ -71,9 +71,7 @@ use std::{error, fmt};
 /// An identifier.
 pub type ID = ffi::hid_t;
 
-/// A type that has an identifier.
-pub trait Identity {
-    /// Return the identifier.
+trait Identity {
     fn id(&self) -> ID;
 }
 
@@ -187,6 +185,7 @@ mod dataspace;
 mod datatype;
 mod file;
 mod link;
+mod writer;
 
 #[cfg(feature = "serialize")]
 mod decoder;
@@ -196,6 +195,7 @@ mod encoder;
 pub use data::{Data, IntoData, Slice};
 pub use datatype::Datatype;
 pub use file::File;
+pub use writer::Writer;
 
 #[cfg(feature = "serialize")]
 pub use decoder::Decoder;

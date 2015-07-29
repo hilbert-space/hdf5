@@ -1,11 +1,18 @@
-use hdf5::File;
+use hdf5::{Data, File, IntoData, Writer};
 use temporary::Directory;
 
 macro_rules! test(
     ($($name:ident := $value:expr,)*) => ({
         let directory = Directory::new("hdf5").unwrap();
         let mut file = File::new(directory.join("data.h5")).unwrap();
-        $(file.write(stringify!($name), $value).unwrap();)*
+        $({
+            let value = $value;
+            let value = value.into_data().unwrap();
+            let position = vec![0; value.dimensions().len()];
+            let mut writer = Writer::new(&mut file, stringify!($name), value.datatype(),
+                                         value.dimensions()).unwrap();
+            writer.write(value, &position).unwrap();
+        })*
     });
 );
 

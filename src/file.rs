@@ -2,9 +2,7 @@ use ffi;
 use std::path::Path;
 
 use data::{Data, IntoData};
-use dataset;
-use dataspace;
-use link::Link;
+use writer::Writer;
 use {ID, Identity, Result};
 
 #[cfg(feature = "serialize")]
@@ -51,15 +49,13 @@ impl File {
 
     /// Write data.
     ///
-    /// The function writes directly into the file without intermediate buffers
-    /// as it is the case when using encoders.
+    /// The function is a shortcut for `Writer::new` followed by
+    /// `Writer::write`.
     pub fn write<T: IntoData>(&mut self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
-        let dataspace = try!(dataspace::new(data.dimensions()));
-        if try!(Link::exists(self.id, name)) {
-            try!(Link::delete(self.id, name));
-        }
-        try!(dataset::new(self.id, name, data.datatype().id(), dataspace.id())).write(data)
+        let dimensions = data.dimensions().len();
+        let mut writer = try!(Writer::new(self, name, data.datatype(), data.dimensions()));
+        writer.write(data, &vec![0; dimensions])
     }
 }
 
