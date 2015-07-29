@@ -63,7 +63,7 @@ impl Inner {
             try!(Link::delete(location, name));
         }
         let dataspace = try!(dataspace::new(dimensions));
-        let dataset = try!(dataset::new(location, name, datatype.id(), dataspace.id()));
+        let dataset = try!(dataset::new(location, name, &datatype, &dataspace));
         Ok(Inner { dataset: dataset, datatype: datatype, dimensions: dimensions.len() })
     }
 
@@ -85,6 +85,6 @@ impl Inner {
         let file_space = try!(self.dataset.space());
         try!(file_space.select(position, size));
 
-        self.dataset.write(data, memory_space.id(), file_space.id())
+        self.dataset.write(data, &memory_space, &file_space)
     }
 }

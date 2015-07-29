@@ -2,6 +2,7 @@ use ffi;
 
 use data::Data;
 use dataspace::{self, Dataspace};
+use datatype::Datatype;
 use {ID, Raw, Result};
 
 pub struct Dataset {
@@ -11,8 +12,10 @@ pub struct Dataset {
 raw!(Dataset);
 
 impl Dataset {
-    pub fn write<T: Data>(&self, data: T, memory_space: ID, file_space: ID) -> Result<()> {
-        ok!(ffi::H5Dwrite(self.id, data.datatype().id(), memory_space, file_space,
+    pub fn write<T: Data>(&self, data: T, memory_space: &Dataspace, file_space: &Dataspace)
+                          -> Result<()> {
+
+        ok!(ffi::H5Dwrite(self.id, data.datatype().id(), memory_space.id(), file_space.id(),
                           ffi::H5P_DEFAULT, data.as_bytes().as_ptr() as *const _),
             "failed to write the data");
         Ok(())
@@ -29,10 +32,13 @@ impl Drop for Dataset {
     }
 }
 
-pub fn new(location: ID, name: &str, datatype: ID, dataspace: ID) -> Result<Dataset> {
+pub fn new(location: ID, name: &str, datatype: &Datatype, dataspace: &Dataspace)
+           -> Result<Dataset> {
+
     Ok(Dataset {
-        id: ok!(ffi::H5Dcreate2(location, str_to_cstr!(name).as_ptr(), datatype, dataspace,
-                                ffi::H5P_DEFAULT, ffi::H5P_DEFAULT, ffi::H5P_DEFAULT),
+        id: ok!(ffi::H5Dcreate2(location, str_to_cstr!(name).as_ptr(), datatype.id(),
+                                dataspace.id(), ffi::H5P_DEFAULT, ffi::H5P_DEFAULT,
+                                ffi::H5P_DEFAULT),
                 "failed to create a dataset {:?}", name),
     })
 }
