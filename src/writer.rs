@@ -7,6 +7,8 @@ use link::Link;
 use {Location, Result};
 
 /// A writer.
+///
+/// Writers are suitable for storing large arrays.
 pub struct Writer<'l> {
     state: State<'l>,
 }
@@ -37,7 +39,8 @@ impl<'l> Writer<'l> {
     /// Write data.
     ///
     /// The function writes a chunk of data at a particular position with a
-    /// particular size.
+    /// particular size. The datatype should stay unchanged from one invocation
+    /// to another.
     pub fn write<T: IntoData>(&mut self, data: T, position: &[usize], size: &[usize])
                               -> Result<()> {
 

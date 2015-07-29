@@ -18,7 +18,7 @@ pub trait Data {
     fn dimensions(&self) -> &[usize];
 }
 
-/// A type capable of converting itself into data.
+/// A type capable of converting into data.
 pub trait IntoData {
     /// The target type.
     type Target: Data;

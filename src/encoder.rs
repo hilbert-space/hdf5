@@ -7,6 +7,8 @@ use file::File;
 use {Error, Result};
 
 /// An encoder.
+///
+/// Encoders are suitable for storing structural data.
 pub struct Encoder<'l> {
     file: &'l mut File,
     name: Option<String>,

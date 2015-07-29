@@ -20,7 +20,9 @@ identity!(File);
 location!(File);
 
 impl File {
-    /// Create a file.
+    /// Create a new file.
+    ///
+    /// If the file already exists, its content will be truncated.
     pub fn new<T: AsRef<Path>>(path: T) -> Result<File> {
         Ok(File {
             id: ok!(ffi::H5Fcreate(path_to_cstr!(path.as_ref()).as_ptr(), ffi::H5F_ACC_TRUNC,
@@ -29,7 +31,7 @@ impl File {
         })
     }
 
-    /// Open a file.
+    /// Open an existing file.
     pub fn open<T: AsRef<Path>>(path: T) -> Result<File> {
         Ok(File {
             id: ok!(ffi::H5Fopen(path_to_cstr!(path.as_ref()).as_ptr(), ffi::H5F_ACC_RDWR,
@@ -51,7 +53,7 @@ impl File {
     /// Write data.
     ///
     /// The function is a shortcut for `Writer::new` followed by
-    /// `Writer::write` when all data should be written at once.
+    /// `Writer::write`.
     pub fn write<T: IntoData>(&mut self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
         let dimensions = data.dimensions();

@@ -75,13 +75,13 @@ pub struct Error(String);
 /// An identifier.
 pub type ID = ffi::hid_t;
 
-/// A type with an identifier.
+/// A type having an identifier.
 pub trait Identity {
     /// Return the identifier.
     fn id(&self) -> ID;
 }
 
-/// A location.
+/// A type representing a location.
 pub trait Location: Identity {
 }
 
