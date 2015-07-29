@@ -5,9 +5,9 @@ use temporary::Directory;
 macro_rules! test(
     ($($name:ident := $value:expr,)*) => ({
         let directory = Directory::new("hdf5").unwrap();
-        let file = File::new(directory.join("data.h5")).unwrap();
+        let mut file = File::new(directory.join("data.h5")).unwrap();
         $({
-            let mut encoder = Encoder::new(&file, stringify!($name)).unwrap();
+            let mut encoder = Encoder::new(&mut file, stringify!($name)).unwrap();
             $value.encode(&mut encoder).unwrap();
         })*
     });
@@ -24,7 +24,7 @@ fn boolean() {
 #[test]
 fn enumeration() {
     let directory = Directory::new("hdf5").unwrap();
-    let file = File::new(directory.join("data.h5")).unwrap();
+    let mut file = File::new(directory.join("data.h5")).unwrap();
 
     #[derive(RustcEncodable)]
     #[allow(dead_code)]
@@ -36,14 +36,14 @@ fn enumeration() {
 
     let foo = Foo::Bar;
 
-    let mut encoder = Encoder::new(&file, "foo").unwrap();
+    let mut encoder = Encoder::new(&mut file, "foo").unwrap();
     foo.encode(&mut encoder).unwrap();
 }
 
 #[test]
 fn compound() {
     let directory = Directory::new("hdf5").unwrap();
-    let file = File::new(directory.join("data.h5")).unwrap();
+    let mut file = File::new(directory.join("data.h5")).unwrap();
 
     #[derive(RustcEncodable)]
     struct Foo {
@@ -73,7 +73,7 @@ fn compound() {
         },
     };
 
-    let mut encoder = Encoder::new(&file, "foo").unwrap();
+    let mut encoder = Encoder::new(&mut file, "foo").unwrap();
     foo.encode(&mut encoder).unwrap();
 }
 

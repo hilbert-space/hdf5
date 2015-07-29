@@ -8,7 +8,7 @@ use {Error, Result};
 
 /// An encoder.
 pub struct Encoder<'l> {
-    file: &'l File,
+    file: &'l mut File,
     name: Option<String>,
     state: State,
 }
@@ -38,7 +38,7 @@ struct Blob {
 
 impl<'l> Encoder<'l> {
     /// Create an encoder.
-    pub fn new(file: &'l File, name: &str) -> Result<Encoder<'l>> {
+    pub fn new(file: &'l mut File, name: &str) -> Result<Encoder<'l>> {
         Ok(Encoder { file: file, name: Some(name.to_string()), state: State::Uncertain })
     }
 

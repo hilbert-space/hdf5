@@ -12,7 +12,7 @@ extern crate hdf5;
 use hdf5::File;
 
 let path = "data.h5";
-let file = File::new(path).unwrap();
+let mut file = File::new(path).unwrap();
 
 file.write("foo", 42).unwrap();
 file.write("bar", &vec![42.0, 69.0]).unwrap();
@@ -45,7 +45,7 @@ let foo = Foo {
 };
 
 let path = "data.h5";
-let file = File::new(path).unwrap();
+let mut file = File::new(path).unwrap();
 
 file.encode("foo", &foo).unwrap();
 ```

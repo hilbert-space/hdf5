@@ -44,7 +44,7 @@ impl File {
     /// The function is a shortcut for `Encoder::new` followed by
     /// `Encodable::encode`.
     #[cfg(feature = "serialize")]
-    pub fn encode<T: Encodable>(&self, name: &str, data: T) -> Result<()> {
+    pub fn encode<T: Encodable>(&mut self, name: &str, data: T) -> Result<()> {
         let mut encoder = try!(Encoder::new(self, name));
         data.encode(&mut encoder)
     }
@@ -53,7 +53,7 @@ impl File {
     ///
     /// The function writes directly into the file without intermediate buffers
     /// as it is the case when using encoders.
-    pub fn write<T: IntoData>(&self, name: &str, data: T) -> Result<()> {
+    pub fn write<T: IntoData>(&mut self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
         let dataspace = try!(dataspace::new(data.dimensions()));
         if try!(Link::exists(self.id, name)) {

@@ -13,7 +13,7 @@
 //! let path = "data.h5";
 //! # let directory = Directory::new("hdf5").unwrap();
 //! # let path = directory.join(path);
-//! let file = File::new(path).unwrap();
+//! let mut file = File::new(path).unwrap();
 //!
 //! file.write("foo", 42).unwrap();
 //! file.write("bar", &vec![42.0, 69.0]).unwrap();
@@ -52,7 +52,7 @@
 //! let path = "data.h5";
 //! # let directory = Directory::new("hdf5").unwrap();
 //! # let path = directory.join(path);
-//! let file = File::new(path).unwrap();
+//! let mut file = File::new(path).unwrap();
 //!
 //! file.encode("foo", &foo).unwrap();
 //! # }

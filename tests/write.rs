@@ -4,7 +4,7 @@ use temporary::Directory;
 macro_rules! test(
     ($($name:ident := $value:expr,)*) => ({
         let directory = Directory::new("hdf5").unwrap();
-        let file = File::new(directory.join("data.h5")).unwrap();
+        let mut file = File::new(directory.join("data.h5")).unwrap();
         $(file.write(stringify!($name), $value).unwrap();)*
     });
 );
