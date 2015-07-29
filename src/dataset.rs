@@ -2,13 +2,13 @@ use ffi;
 
 use data::Data;
 use dataspace::{self, Dataspace};
-use {ID, Identity, Result};
+use {ID, Raw, Result};
 
 pub struct Dataset {
     id: ID,
 }
 
-identity!(Dataset);
+raw!(Dataset);
 
 impl Dataset {
     pub fn write<T: Data>(&self, data: T, memory_space: ID, file_space: ID) -> Result<()> {

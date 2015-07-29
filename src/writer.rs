@@ -6,7 +6,7 @@ use dataspace;
 use datatype::Datatype;
 use file::File;
 use link::Link;
-use {ID, Identity, Result};
+use {ID, Raw, Result};
 
 /// A writer.
 pub struct Writer<'l> {

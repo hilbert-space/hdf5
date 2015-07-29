@@ -2,7 +2,7 @@ use ffi;
 use libc;
 use std::rc::Rc;
 
-use {Result, ID, Identity};
+use {ID, Raw, Result};
 
 /// A datatype.
 #[derive(Clone)]
@@ -30,7 +30,7 @@ impl Datatype {
     }
 }
 
-impl Identity for Datatype {
+impl Raw for Datatype {
     #[inline]
     fn id(&self) -> ID {
         self.0.id

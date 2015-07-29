@@ -71,7 +71,7 @@ use std::{error, fmt};
 /// An identifier.
 pub type ID = ffi::hid_t;
 
-trait Identity {
+trait Raw {
     fn id(&self) -> ID;
 }
 
@@ -82,16 +82,16 @@ pub struct Error(String);
 /// A result.
 pub type Result<T> = std::result::Result<T, Error>;
 
-macro_rules! identity(
+macro_rules! raw(
     ($name:ident) => (
-        impl ::Identity for $name {
+        impl ::Raw for $name {
             #[inline]
             fn id(&self) -> ::ID {
                 self.id
             }
         }
 
-        impl<'l> ::Identity for &'l $name {
+        impl<'l> ::Raw for &'l $name {
             #[inline]
             fn id(&self) -> ::ID {
                 self.id
@@ -167,13 +167,6 @@ impl error::Error for Error {
     #[inline]
     fn description(&self) -> &str {
         &self.0
-    }
-}
-
-impl Identity for ID {
-    #[inline]
-    fn id(&self) -> ID {
-        *self
     }
 }
 
