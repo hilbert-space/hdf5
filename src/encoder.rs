@@ -44,7 +44,7 @@ impl<'l> Encoder<'l> {
     /// If there exists a dataset with the same name, it will be removed from
     /// the file structure, and a new dataset will be created. This operation,
     /// however, does not reclaim the corresponding space. See [Section
-    /// 5.5.2][1] in the user manual for further details.
+    /// 5.5.2][1] in the user’s guide for further details.
     ///
     /// [1]: https://www.hdfgroup.org/HDF5/doc/UG/10_Datasets.html#Allocation
     pub fn new(file: &'l File, name: &str) -> Encoder<'l> {
