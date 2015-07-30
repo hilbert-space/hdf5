@@ -28,7 +28,7 @@ impl<'l> Writer<'l> {
     /// Create a writer.
     ///
     /// If the dataset already exists, it will be overwritten.
-    pub fn new(file: &'l mut File, name: &str, dimensions: &[usize]) -> Writer<'l> {
+    pub fn new(file: &'l File, name: &str, dimensions: &[usize]) -> Writer<'l> {
         Writer {
             state: State::Setup {
                 location: file,

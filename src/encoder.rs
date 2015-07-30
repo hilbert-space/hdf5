@@ -10,7 +10,7 @@ use {Error, Result};
 ///
 /// Encoders are suitable for storing structural data.
 pub struct Encoder<'l> {
-    file: &'l mut File,
+    file: &'l File,
     name: Option<String>,
     state: State,
 }
@@ -42,7 +42,7 @@ impl<'l> Encoder<'l> {
     /// Create an encoder.
     ///
     /// If the dataset already exists, it will be overwritten.
-    pub fn new(file: &'l mut File, name: &str) -> Encoder<'l> {
+    pub fn new(file: &'l File, name: &str) -> Encoder<'l> {
         Encoder { file: file, name: Some(name.to_string()), state: State::Uncertain }
     }
 

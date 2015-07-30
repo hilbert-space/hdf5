@@ -45,7 +45,7 @@ impl File {
     /// The function is a shortcut for `Encoder::new` followed by
     /// `Encodable::encode`.
     #[cfg(feature = "serialize")]
-    pub fn encode<T: Encodable>(&mut self, name: &str, data: T) -> Result<()> {
+    pub fn encode<T: Encodable>(&self, name: &str, data: T) -> Result<()> {
         let mut encoder = Encoder::new(self, name);
         data.encode(&mut encoder)
     }
@@ -54,7 +54,7 @@ impl File {
     ///
     /// The function is a shortcut for `Writer::new` followed by
     /// `Writer::write`.
-    pub fn write<T: IntoData>(&mut self, name: &str, data: T) -> Result<()> {
+    pub fn write<T: IntoData>(&self, name: &str, data: T) -> Result<()> {
         let data = try!(data.into_data());
         let dimensions = data.dimensions();
         let mut writer = Writer::new(self, name, dimensions);
