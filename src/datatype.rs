@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 use {ID, Identity, Result};
 
-/// A datatype.
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct Datatype(Rc<Inner>);
 

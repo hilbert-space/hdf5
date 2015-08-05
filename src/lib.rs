@@ -72,16 +72,15 @@ use std::{error, fmt};
 #[derive(Clone, Debug)]
 pub struct Error(String);
 
-/// An identifier.
+#[doc(hidden)]
 pub type ID = ffi::hid_t;
 
-/// A type having an identifier.
+#[doc(hidden)]
 pub trait Identity {
-    /// Return the identifier.
     fn id(&self) -> ID;
 }
 
-/// A type representing a location.
+#[doc(hidden)]
 pub trait Location: Identity {
 }
 

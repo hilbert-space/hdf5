@@ -6,7 +6,7 @@ use datatype::{self, Datatype};
 
 const SCALAR_DIMENSIONS: &'static [usize] = &[1];
 
-/// A type suitable for storing.
+/// An object suitable for storing.
 pub trait Data {
     /// Return the raw data.
     fn as_bytes(&self) -> &[u8];
@@ -18,7 +18,7 @@ pub trait Data {
     fn dimensions(&self) -> &[usize];
 }
 
-/// A type capable of converting into data.
+/// An object capable of converting into data.
 pub trait IntoData {
     /// The target type.
     type Target: Data;
@@ -27,7 +27,7 @@ pub trait IntoData {
     fn into_data(self) -> Result<Self::Target>;
 }
 
-/// A slice.
+#[doc(hidden)]
 pub struct Slice<'l, T: 'l> {
     data: &'l [T],
     datatype: Datatype,
