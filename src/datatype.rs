@@ -48,7 +48,7 @@ impl Drop for Inner {
 impl PartialEq for Datatype {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        self.0.id == other.0.id
+        self.0.id == other.0.id || (unsafe { ffi::H5Tequal(self.0.id, other.0.id) } > 0)
     }
 }
 
