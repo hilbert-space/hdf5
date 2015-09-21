@@ -78,6 +78,19 @@ fn compound() {
 }
 
 #[test]
+fn compound_vector() {
+    #[derive(RustcEncodable)]
+    struct Complex {
+        re: f64,
+        im: f64,
+    }
+
+    test!(
+        a := vec![Complex { re: 42.0, im: 69.0 }, Complex { re: 69.0, im: 42.0 }],
+    );
+}
+
+#[test]
 fn numberic_scalar() {
     test!(
         a := 42f32,
