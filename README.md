@@ -1,6 +1,8 @@
 # HDF5 [![Version][version-img]][version-url] [![Status][status-img]][status-url]
 
-The package provides an interface to [HDF5][1].
+The package provides an interface to [HDF5][1]. Currently the package is only
+capable of writing/encoding; the reading/decoding functionality is yet to be
+implemented.
 
 ## [Documentation][doc]
 
