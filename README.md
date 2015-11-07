@@ -61,7 +61,7 @@ file.encode("foo", &foo).unwrap();
 [1]: http://www.hdfgroup.org/HDF5
 [2]: https://crates.io/crates/rustc-serialize
 
-[version-img]: http://stainless-steel.github.io/images/crates.svg
+[version-img]: https://img.shields.io/crates/v/hdf5.svg
 [version-url]: https://crates.io/crates/hdf5
 [status-img]: https://travis-ci.org/stainless-steel/hdf5.svg?branch=master
 [status-url]: https://travis-ci.org/stainless-steel/hdf5
