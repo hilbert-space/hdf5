@@ -11,5 +11,6 @@ mod write;
 
 #[test]
 fn version() {
-    assert_eq!(hdf5::version().unwrap(), (1, 8, 15));
+    let (major, minor, _) = hdf5::version().unwrap();
+    assert_eq!((major, minor), (1, 8));
 }

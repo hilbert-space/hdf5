@@ -1,6 +1,6 @@
 [package]
 name = "hdf5"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/stainless-steel/hdf5"
@@ -13,7 +13,7 @@ default = ["serialize"]
 serialize = ["rustc-serialize"]
 
 [dependencies]
-hdf5-sys = "0.2"
+hdf5-sys = "0.3"
 libc = "0.2"
 
 [dependencies.rustc-serialize]
