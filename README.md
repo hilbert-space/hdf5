@@ -52,17 +52,17 @@ let file = File::new(path).unwrap();
 file.encode("foo", &foo).unwrap();
 ```
 
-## Contributing
+## Contribution
 
-1. Fork the project.
-2. Implement your idea.
-3. Open a pull request.
+Your contribution is highly appreciated. Do not hesitate to open an issue or a
+pull request. Note that any contribution submitted for inclusion in the project
+will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
 [1]: http://www.hdfgroup.org/HDF5
 [2]: https://crates.io/crates/rustc-serialize
 
-[version-img]: https://img.shields.io/crates/v/hdf5.svg
-[version-url]: https://crates.io/crates/hdf5
+[doc]: https://stainless-steel.github.io/hdf5
 [status-img]: https://travis-ci.org/stainless-steel/hdf5.svg?branch=master
 [status-url]: https://travis-ci.org/stainless-steel/hdf5
-[doc]: https://stainless-steel.github.io/hdf5
+[version-img]: https://img.shields.io/crates/v/hdf5.svg
+[version-url]: https://crates.io/crates/hdf5

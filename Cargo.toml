@@ -1,19 +1,19 @@
 [package]
 name = "hdf5"
-version = "0.3.2"
+version = "0.4.0"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
-license = "MIT"
-repository = "https://github.com/stainless-steel/hdf5"
-homepage = "https://github.com/stainless-steel/hdf5"
-documentation = "https://stainless-steel.github.io/hdf5"
+license = "Apache-2.0/MIT"
 description = "The package provides an interface to HDF5."
+documentation = "https://stainless-steel.github.io/hdf5"
+homepage = "https://github.com/stainless-steel/hdf5"
+repository = "https://github.com/stainless-steel/hdf5"
 
 [features]
 default = ["serialize"]
 serialize = ["rustc-serialize"]
 
 [dependencies]
-hdf5-sys = "0.3"
+hdf5-sys = "0.4"
 libc = "0.2"
 
 [dependencies.rustc-serialize]
@@ -21,7 +21,7 @@ version = "0.3"
 optional = true
 
 [dev-dependencies]
-temporary = "0.5"
+temporary = "0.6"
 
 [[test]]
 name = "hdf5"
