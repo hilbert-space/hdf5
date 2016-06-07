@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["H5G_storage_type_t",""]],"fn":[["H5Gclose",""],["H5Gcreate2",""],["H5Gcreate_anon",""],["H5Gget_create_plist",""],["H5Gget_info",""],["H5Gget_info_by_idx",""],["H5Gget_info_by_name",""],["H5Gopen2",""]],"struct":[["H5G_info_t",""]]});

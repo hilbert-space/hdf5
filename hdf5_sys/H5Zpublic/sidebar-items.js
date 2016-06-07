@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["H5Z_EDC_t",""],["H5Z_SO_scale_type_t",""],["H5Z_cb_return_t",""]],"fn":[["H5Zfilter_avail",""],["H5Zget_filter_info",""],["H5Zregister",""],["H5Zunregister",""]],"struct":[["H5Z_cb_t",""]],"type":[["H5Z_filter_func_t",""],["H5Z_filter_t",""]]});

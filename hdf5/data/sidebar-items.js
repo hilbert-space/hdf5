@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Data","An object suitable for storing."],["IntoData","An object capable of converting into data."]]});

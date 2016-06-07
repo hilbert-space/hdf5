@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `H5AC_cache_config_t` struct in crate `hdf5_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, H5AC_cache_config_t">
+
+    <title>hdf5_sys::H5AC_cache_config_t - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>hdf5_sys</a></p><script>window.sidebarCurrent = {name: 'H5AC_cache_config_t', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>hdf5_sys</a>::<wbr><a class='struct' href=''>H5AC_cache_config_t</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-10' class='srclink' href='../src/hdf5_sys/H5ACpublic.rs.html#7-38' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct H5AC_cache_config_t {
+    pub version: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a>,
+    pub rpt_fcn_enabled: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub open_trace_file: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub close_trace_file: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub trace_file_name: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='type' href='../libc/unix/notbsd/linux/other/b64/x86_64/type.c_char.html' title='libc::unix::notbsd::linux::other::b64::x86_64::c_char'>c_char</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 1025]</a>,
+    pub evictions_enabled: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub set_initial_size: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub initial_size: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a>,
+    pub min_clean_fraction: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub max_size: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a>,
+    pub min_size: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a>,
+    pub epoch_length: <a class='type' href='../libc/unix/notbsd/linux/other/b64/type.c_long.html' title='libc::unix::notbsd::linux::other::b64::c_long'>c_long</a>,
+    pub incr_mode: <a class='enum' href='../hdf5_sys/enum.H5C_cache_incr_mode.html' title='hdf5_sys::H5C_cache_incr_mode'>H5C_cache_incr_mode</a>,
+    pub lower_hr_threshold: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub increment: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub apply_max_increment: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub max_increment: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a>,
+    pub flash_incr_mode: <a class='enum' href='../hdf5_sys/enum.H5C_cache_flash_incr_mode.html' title='hdf5_sys::H5C_cache_flash_incr_mode'>H5C_cache_flash_incr_mode</a>,
+    pub flash_multiple: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub flash_threshold: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub decr_mode: <a class='enum' href='../hdf5_sys/enum.H5C_cache_decr_mode.html' title='hdf5_sys::H5C_cache_decr_mode'>H5C_cache_decr_mode</a>,
+    pub upper_hr_threshold: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub decrement: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub apply_max_decrement: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub max_decrement: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a>,
+    pub epochs_before_eviction: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a>,
+    pub apply_empty_reserve: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a>,
+    pub empty_reserve: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a>,
+    pub dirty_bytes_threshold: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a>,
+    pub metadata_write_strategy: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a>,
+}</pre><h2 class='fields'>Fields</h2><span id='structfield.version'><code>version: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a></code></span>
+                           <span class='stab '></span><span id='structfield.rpt_fcn_enabled'><code>rpt_fcn_enabled: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.open_trace_file'><code>open_trace_file: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.close_trace_file'><code>close_trace_file: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.trace_file_name'><code>trace_file_name: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[</a><a class='type' href='../libc/unix/notbsd/linux/other/b64/x86_64/type.c_char.html' title='libc::unix::notbsd::linux::other::b64::x86_64::c_char'>c_char</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>; 1025]</a></code></span>
+                           <span class='stab '></span><span id='structfield.evictions_enabled'><code>evictions_enabled: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.set_initial_size'><code>set_initial_size: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.initial_size'><code>initial_size: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.min_clean_fraction'><code>min_clean_fraction: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.max_size'><code>max_size: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.min_size'><code>min_size: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.epoch_length'><code>epoch_length: <a class='type' href='../libc/unix/notbsd/linux/other/b64/type.c_long.html' title='libc::unix::notbsd::linux::other::b64::c_long'>c_long</a></code></span>
+                           <span class='stab '></span><span id='structfield.incr_mode'><code>incr_mode: <a class='enum' href='../hdf5_sys/enum.H5C_cache_incr_mode.html' title='hdf5_sys::H5C_cache_incr_mode'>H5C_cache_incr_mode</a></code></span>
+                           <span class='stab '></span><span id='structfield.lower_hr_threshold'><code>lower_hr_threshold: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.increment'><code>increment: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.apply_max_increment'><code>apply_max_increment: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.max_increment'><code>max_increment: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.flash_incr_mode'><code>flash_incr_mode: <a class='enum' href='../hdf5_sys/enum.H5C_cache_flash_incr_mode.html' title='hdf5_sys::H5C_cache_flash_incr_mode'>H5C_cache_flash_incr_mode</a></code></span>
+                           <span class='stab '></span><span id='structfield.flash_multiple'><code>flash_multiple: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.flash_threshold'><code>flash_threshold: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.decr_mode'><code>decr_mode: <a class='enum' href='../hdf5_sys/enum.H5C_cache_decr_mode.html' title='hdf5_sys::H5C_cache_decr_mode'>H5C_cache_decr_mode</a></code></span>
+                           <span class='stab '></span><span id='structfield.upper_hr_threshold'><code>upper_hr_threshold: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.decrement'><code>decrement: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.apply_max_decrement'><code>apply_max_decrement: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.max_decrement'><code>max_decrement: <a class='type' href='../libc/type.size_t.html' title='libc::size_t'>size_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.epochs_before_eviction'><code>epochs_before_eviction: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a></code></span>
+                           <span class='stab '></span><span id='structfield.apply_empty_reserve'><code>apply_empty_reserve: <a class='type' href='../hdf5_sys/type.hbool_t.html' title='hdf5_sys::hbool_t'>hbool_t</a></code></span>
+                           <span class='stab '></span><span id='structfield.empty_reserve'><code>empty_reserve: <a class='type' href='../libc/type.c_double.html' title='libc::c_double'>c_double</a></code></span>
+                           <span class='stab '></span><span id='structfield.dirty_bytes_threshold'><code>dirty_bytes_threshold: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a></code></span>
+                           <span class='stab '></span><span id='structfield.metadata_write_strategy'><code>metadata_write_strategy: <a class='type' href='../libc/type.c_int.html' title='libc::c_int'>c_int</a></code></span>
+                           <span class='stab '></span></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "hdf5_sys";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
