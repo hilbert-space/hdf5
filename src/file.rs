@@ -3,7 +3,7 @@ use std::path::Path;
 
 use data::{Data, IntoData};
 use writer::Writer;
-use {ID, Identity, Result};
+use {ID, Result};
 
 #[cfg(feature = "serialize")]
 use encoder::Encoder;
