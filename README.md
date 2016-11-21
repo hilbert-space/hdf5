@@ -4,7 +4,7 @@ The package provides an interface to [HDF5][1]. Currently the package is only
 capable of writing/encoding; the reading/decoding functionality is yet to be
 implemented.
 
-## [Documentation][doc]
+## [Documentation][documentation]
 
 ## Example
 
@@ -61,7 +61,7 @@ will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 [1]: http://www.hdfgroup.org/HDF5
 [2]: https://crates.io/crates/rustc-serialize
 
-[doc]: https://stainless-steel.github.io/hdf5
+[documentation]: https://docs.rs/hdf5
 [status-img]: https://travis-ci.org/stainless-steel/hdf5.svg?branch=master
 [status-url]: https://travis-ci.org/stainless-steel/hdf5
 [version-img]: https://img.shields.io/crates/v/hdf5.svg

@@ -1,10 +1,10 @@
 [package]
 name = "hdf5"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 license = "Apache-2.0/MIT"
 description = "The package provides an interface to HDF5."
-documentation = "https://stainless-steel.github.io/hdf5"
+documentation = "https://docs.rs/hdf5"
 homepage = "https://github.com/stainless-steel/hdf5"
 repository = "https://github.com/stainless-steel/hdf5"
 
